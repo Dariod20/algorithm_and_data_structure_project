@@ -1,5 +1,6 @@
 package it.unibs.alg.pathfinding;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +12,11 @@ public class GridGenerator {
 	/*
 	 * n. rows (height) x n.columns (length)
 	 */
-	public GridGenerator(int h, int l) {
+	public GridGenerator(int h, int l, double obstacles_percentage, double agglomeration_factor) {
 		grid = new String[h][l];
 		wG = new HashMap<>();
 		inizializeGridAndNooseNodes();
+		insertObstacles(obstacles_percentage, agglomeration_factor);
 		instantiatewG();
 	}
 
@@ -41,6 +43,42 @@ public class GridGenerator {
 		}
 	}
 	
+	private void insertObstacles(double pct, double agglFact) {
+		int dim = grid.length * grid[0].length;
+		int numObst = (int) ((int) dim * pct);
+		ArrayList<int[]> existingObstPos = new ArrayList<>();
+		
+		int i = 0, j = 0;
+		int[] obstPos = new int[2];
+		if(numObst > 0) {
+			i = (int) (grid.length * Math.random());
+			j = (int) (grid[0].length * Math.random());
+			wG.remove(grid[i][j] + grid[i][j]);
+			grid[i][j] = "x";
+			obstPos[0] = i;
+			obstPos[1] = j;
+			existingObstPos.add(obstPos);
+		}
+		int count = 2;
+		
+		while(count <= numObst) {
+			if(Math.random() > agglFact) {
+//				TODO
+			} else {
+				do {
+					i = (int) (grid.length * Math.random());
+					j = (int) (grid[0].length * Math.random());
+				} while(grid[i][j].equals("x"));
+			}
+			
+			wG.remove(grid[i][j] + grid[i][j]);
+			grid[i][j] = "x";
+			
+			count++;
+		}
+	}
+	
+	
 	/*
 	 * Create the map with all arcs with their weights
 	 */
@@ -49,31 +87,42 @@ public class GridGenerator {
 		
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
+				if(isAnObstacle(i, j)) {
+					continue;
+				}
 				String currentValue = grid[i][j];
 				if(i-1 >= 0) {
-					wG.put(currentValue + grid[i-1][j], 1.0);
-					if(j+1 < grid[0].length)
+					if(!isAnObstacle(i-1, j)) 
+						wG.put(currentValue + grid[i-1][j], 1.0);
+					if(j+1 < grid[0].length && !isAnObstacle(i-1, j+1))
 						wG.put(currentValue + grid[i-1][j+1], square2);
-					if(j-1 >= 0)
+					if(j-1 >= 0 && !isAnObstacle(i-1, j-1))
 						wG.put(currentValue + grid[i-1][j-1], square2);
 				}
 				if(j+1 < grid[0].length) {
-					wG.put(currentValue + grid[i][j+1], 1.0);
-					if(i+1 < grid.length)
+					if(!isAnObstacle(i, j+1))
+						wG.put(currentValue + grid[i][j+1], 1.0);
+					if(i+1 < grid.length && !isAnObstacle(i+1, j+1))
 						wG.put(currentValue + grid[i+1][j+1], square2);
 				}
 				if(i+1 < grid.length) {
-					wG.put(currentValue + grid[i+1][j], 1.0);
-					if(j-1 >= 0)
+					if(!isAnObstacle(i+1, j))
+						wG.put(currentValue + grid[i+1][j], 1.0);
+					if(j-1 >= 0 && !isAnObstacle(i+1, j-1))
 						wG.put(currentValue + grid[i+1][j-1], square2);
 				}
-				if(j-1 >= 0)
+				if(j-1 >= 0 && !isAnObstacle(i, j-1))
 					wG.put(currentValue + grid[i][j-1], 1.0);
 			}
 		}
 	}
 	
-	
+	private boolean isAnObstacle(int i, int j) {
+		if(grid[i][j].equals("x")) {
+			return true;
+		}
+		return false;
+	}
 	
 	
 	
