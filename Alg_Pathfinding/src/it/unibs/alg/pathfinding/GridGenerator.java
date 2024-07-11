@@ -43,6 +43,10 @@ public class GridGenerator {
 		}
 	}
 	
+	/*
+	 * Insert the obstacles in grid based on their percentage and based on the fact
+	 * if the probability of agglomerates is high or not
+	 */
 	private void insertObstacles(double pct, double agglFact) {
 		int dim = grid.length * grid[0].length;
 		int numObst = (int) ((int) dim * pct);
@@ -62,20 +66,51 @@ public class GridGenerator {
 		int count = 2;
 		
 		while(count <= numObst) {
-			if(Math.random() > agglFact) {
-//				TODO
+			if(Math.random() < agglFact) {
+				int [] newObst = getNewObstPos(existingObstPos);
+				i = newObst[0];
+				j = newObst[1];
+				obstPos = newObst;
 			} else {
 				do {
 					i = (int) (grid.length * Math.random());
 					j = (int) (grid[0].length * Math.random());
+					obstPos[0] = i;
+					obstPos[1] = j;
 				} while(grid[i][j].equals("x"));
 			}
 			
 			wG.remove(grid[i][j] + grid[i][j]);
 			grid[i][j] = "x";
+			existingObstPos.add(obstPos);
 			
 			count++;
 		}
+	}
+	
+	private int[] getNewObstPos(ArrayList<int[]> existingObstPos) {
+		int elem = (int) (existingObstPos.size() * Math.random());
+		int[] obst = existingObstPos.get(elem);
+		do {
+			double r = Math.random();
+			if(r < 0.25 && obst[0]-1 >= 0 && !grid[obst[0]-1][obst[1]].equals("x")) {
+				obst[0] = obst[0]-1;
+				return obst;
+			}
+			if(r < 0.5 && obst[0]+1 < grid.length && !grid[obst[0]+1][obst[1]].equals("x")) {
+				obst[0] = obst[0]+1;
+				return obst;
+			}
+			if(r < 0.75 && obst[1]-1 >= 0 && !grid[obst[0]][obst[1]-1].equals("x")) {
+				obst[1] = obst[1]-1;
+				return obst;
+			}
+			if(obst[1]+1 < grid[0].length && !grid[obst[0]][obst[1]+1].equals("x")) {
+				obst[1] = obst[1]+1;
+				return obst;
+			}
+			
+		} while(true);
 	}
 	
 	
