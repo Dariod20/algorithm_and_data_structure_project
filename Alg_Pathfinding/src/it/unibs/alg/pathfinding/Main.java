@@ -1,14 +1,22 @@
 package it.unibs.alg.pathfinding;
 
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
 //		se pct ostacoli e fattAggl troppo alti, la griglia non si crea
-		GridGenerator gridGenerator = new GridGenerator(10, 20, 0.8, 0);
+		
+		GridGenerator gridGenerator = new GridGenerator(5, 5, 0.2, 0);
 		String[][] grid = gridGenerator.getGrid();
+		
+//		genero griglia in modo manuale
+		
+		grid[1][3] = grid[2][1] = grid[2][2] = grid[2][3] = "x";
+		gridGenerator.instantiatewG();
+		
 		Map<String, Double> weightedGraph = gridGenerator.getwG();
 		
 		for(int i=0; i < grid.length; i++) {
@@ -42,6 +50,14 @@ public class Main {
 		for(Map.Entry<String, Double> entry : weightedGraph.entrySet()) {
 	            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
 	    }
+		
+		
+		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(weightedGraph, grid[3][2]);
+		Map<Integer, Double> h = heuritic.getH();
+		
+		for(Entry<Integer, Double> entry : h.entrySet()) {
+            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
+    }
 
 	}
 

@@ -16,8 +16,8 @@ public class GridGenerator {
 		grid = new String[h][l];
 		wG = new HashMap<>();
 		inizializeGridAndNooseNodes();
-		insertObstacles(obstacles_percentage, agglomeration_factor);
-		instantiatewG();
+//		insertObstacles(obstacles_percentage, agglomeration_factor);
+//		instantiatewG();
 	}
 
 	public String[][] getGrid() {
@@ -88,6 +88,10 @@ public class GridGenerator {
 		}
 	}
 	
+	/*
+	 * Insert a new obstacle based on the agglomeration factor and to make sure to not
+	 * overlap the new obstacles with an existing one
+	 */
 	private int[] getNewObstPos(ArrayList<int[]> existingObstPos) {
 		int elem = (int) (existingObstPos.size() * Math.random());
 		int[] obst = existingObstPos.get(elem);
@@ -117,7 +121,7 @@ public class GridGenerator {
 	/*
 	 * Create the map with all arcs with their weights
 	 */
-	private void instantiatewG() {
+	/*private*/public void instantiatewG() {
 		double square2 = Math.sqrt(2);
 		
 		for(int i=0; i < grid.length; i++) {
