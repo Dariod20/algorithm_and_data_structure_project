@@ -8,28 +8,28 @@ import java.util.stream.Collectors;
 
 public class HeuristicAlgorithm {
 	
-//	private List<Integer> allStates;
+	private List<String> allStates;
 	private Map<String, Double> wG;
 	private String goal;
 	
 	private Map<Integer, Double> h = new HashMap<>();
 	
-	public HeuristicAlgorithm(Map<String, Double> wG, String goal) {
+	public HeuristicAlgorithm(List<String> allStates, Map<String, Double> wG, String goal) {
+		this.allStates = allStates;
 		this.wG = wG;
 		this.goal = goal;
 		
-//		for(int i=0; i < G.length; i++) {
-//			allStates.add(G[i]);
-//		}
-//		allStates.remove(Integer.parseInt(goal));
+		this.allStates.remove(goal);
 		
 		computeHeuristic(goal);
 	}
 	
 	private void computeHeuristic(String state) {
 		List<String> adjacentEdges = wG.keySet().stream()
-	            .filter(key -> key.endsWith(state))
+	            .filter(key -> key.endsWith("_" + state))
 	            .collect(Collectors.toList());
+		
+		adjacentEdges.remove(state + "_" + state); 
 		
 		List<String> adjacentStates = new ArrayList<>();
 		
@@ -40,8 +40,8 @@ public class HeuristicAlgorithm {
 			} else {
 				cost = wG.get(e);
 			}
-			//da sistemare
-			String adjCurrentState = e.split(state)[0];
+			
+			String adjCurrentState = e.split("_")[0];
 			int currentState = Integer.parseInt(adjCurrentState);
 			if(!h.containsKey(currentState)) {
 				adjacentStates.add(adjCurrentState);
@@ -52,6 +52,21 @@ public class HeuristicAlgorithm {
 					h.put(currentState, cost);
 				}
 			}
+			
+//			String[] splitting = e.split(state);
+//			String adjCurrentState = splitting[0];
+//			if(splitting.length == 1 && allStates.contains(adjCurrentState)) {
+//				int currentState = Integer.parseInt(adjCurrentState);
+//				if(!h.containsKey(currentState)) {
+//					adjacentStates.add(adjCurrentState);
+//					h.put(currentState, cost);
+//				} else {
+//					if(h.get(currentState) > cost) {
+//						adjacentStates.add(adjCurrentState);
+//						h.put(currentState, cost);
+//					}
+//				}
+//			}
 		}
 		
 		for(String s: adjacentStates) {

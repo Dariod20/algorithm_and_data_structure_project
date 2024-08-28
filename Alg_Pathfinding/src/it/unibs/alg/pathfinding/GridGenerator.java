@@ -37,7 +37,7 @@ public class GridGenerator {
 			for(int j=0; j < grid[0].length; j++) {
 				String newValue = v.toString();
 				grid[i][j] = newValue;
-				wG.put(newValue + newValue, 1.0);
+				wG.put(newValue + "_" + newValue, 1.0);
 				v++;
 			}
 		}
@@ -132,26 +132,26 @@ public class GridGenerator {
 				String currentValue = grid[i][j];
 				if(i-1 >= 0) {
 					if(!isAnObstacle(i-1, j)) 
-						wG.put(currentValue + grid[i-1][j], 1.0);
+						wG.put(currentValue + "_" + grid[i-1][j], 1.0);
 					if(j+1 < grid[0].length && !isAnObstacle(i-1, j+1))
-						wG.put(currentValue + grid[i-1][j+1], square2);
+						wG.put(currentValue + "_" + grid[i-1][j+1], square2);
 					if(j-1 >= 0 && !isAnObstacle(i-1, j-1))
-						wG.put(currentValue + grid[i-1][j-1], square2);
+						wG.put(currentValue + "_" + grid[i-1][j-1], square2);
 				}
 				if(j+1 < grid[0].length) {
 					if(!isAnObstacle(i, j+1))
-						wG.put(currentValue + grid[i][j+1], 1.0);
+						wG.put(currentValue + "_" + grid[i][j+1], 1.0);
 					if(i+1 < grid.length && !isAnObstacle(i+1, j+1))
-						wG.put(currentValue + grid[i+1][j+1], square2);
+						wG.put(currentValue + "_" + grid[i+1][j+1], square2);
 				}
 				if(i+1 < grid.length) {
 					if(!isAnObstacle(i+1, j))
-						wG.put(currentValue + grid[i+1][j], 1.0);
+						wG.put(currentValue + "_" + grid[i+1][j], 1.0);
 					if(j-1 >= 0 && !isAnObstacle(i+1, j-1))
-						wG.put(currentValue + grid[i+1][j-1], square2);
+						wG.put(currentValue + "_" + grid[i+1][j-1], square2);
 				}
 				if(j-1 >= 0 && !isAnObstacle(i, j-1))
-					wG.put(currentValue + grid[i][j-1], 1.0);
+					wG.put(currentValue + "_" + grid[i][j-1], 1.0);
 			}
 		}
 	}

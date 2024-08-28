@@ -1,11 +1,15 @@
 package it.unibs.alg.pathfinding;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class Main {
 
 	public static void main(String[] args) {
+		
+		long start = System.currentTimeMillis();
 		
 //		se pct ostacoli e fattAggl troppo alti, la griglia non si crea
 		
@@ -51,13 +55,31 @@ public class Main {
 	            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
 	    }
 		
+		System.out.println();
+		System.out.println();
+		System.out.println();
 		
-		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(weightedGraph, grid[3][2]);
+		
+		List<String> allStates = new ArrayList<>();
+		
+		for(int i=0; i < grid.length; i++) {
+			for(int j=0; j < grid[0].length; j++) {
+				if(!grid[i][j].equals("x")) {
+					allStates.add(grid[i][j]);
+				}
+			}
+		}
+		
+		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(allStates, weightedGraph, grid[3][2]);
 		Map<Integer, Double> h = heuritic.getH();
 		
 		for(Entry<Integer, Double> entry : h.entrySet()) {
             System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
-    }
+		}
+		
+		long end = System.currentTimeMillis();
+		
+		System.out.println("\n\nDurata: " + (end-start) + " millisecondi");
 
 	}
 
