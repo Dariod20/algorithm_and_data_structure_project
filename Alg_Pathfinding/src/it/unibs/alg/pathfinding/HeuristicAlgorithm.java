@@ -8,25 +8,28 @@ import java.util.stream.Collectors;
 
 public class HeuristicAlgorithm {
 	
-	private List<String> allStates;
-	private Map<String, Double> wG;
+	private Map<String, Double> wG;	
 	private String goal;
-	
 	private Map<Integer, Double> h = new HashMap<>();
 	
-	public HeuristicAlgorithm(List<String> allStates, Map<String, Double> wG, String goal) {
-		this.allStates = allStates;
-		this.wG = wG;
+	public HeuristicAlgorithm(int[] G, Map<String, Double> wG, String goal) {
 		this.goal = goal;
+		this.wG = wG;
 		
-		this.allStates.remove(goal);
+//		allStates.remove(this.goal);
+		
+		for(int i=0; i < G.length; i++) {
+			h.put(G[i], 0.0);
+		}
 		
 		computeHeuristic(goal);
 	}
 	
 	private void computeHeuristic(String state) {
 		List<String> adjacentEdges = wG.keySet().stream()
-	            .filter(key -> key.endsWith("_" + state))
+				//se non si considera ilcosto del goal per capire che si è raggiunto il goal, 
+				//il secondo controllo è rimovibile
+	            .filter(key -> key.endsWith("_" + state) && !key.startsWith(goal))
 	            .collect(Collectors.toList());
 		
 		adjacentEdges.remove(state + "_" + state); 
@@ -34,39 +37,15 @@ public class HeuristicAlgorithm {
 		List<String> adjacentStates = new ArrayList<>();
 		
 		for(String e: adjacentEdges) {
-			double cost = 0;
-			if(!state.equals(goal)) {
-				cost = h.get(Integer.parseInt(state)) + wG.get(e);
-			} else {
-				cost = wG.get(e);
-			}
-			
+			double cost = h.get(Integer.parseInt(state)) + wG.get(e);
 			String adjCurrentState = e.split("_")[0];
 			int currentState = Integer.parseInt(adjCurrentState);
-			if(!h.containsKey(currentState)) {
+			double insertedCost = h.get(currentState);
+			
+			if(insertedCost == 0 || insertedCost > cost) {
 				adjacentStates.add(adjCurrentState);
 				h.put(currentState, cost);
-			} else {
-				if(h.get(currentState) > cost) {
-					adjacentStates.add(adjCurrentState);
-					h.put(currentState, cost);
-				}
 			}
-			
-//			String[] splitting = e.split(state);
-//			String adjCurrentState = splitting[0];
-//			if(splitting.length == 1 && allStates.contains(adjCurrentState)) {
-//				int currentState = Integer.parseInt(adjCurrentState);
-//				if(!h.containsKey(currentState)) {
-//					adjacentStates.add(adjCurrentState);
-//					h.put(currentState, cost);
-//				} else {
-//					if(h.get(currentState) > cost) {
-//						adjacentStates.add(adjCurrentState);
-//						h.put(currentState, cost);
-//					}
-//				}
-//			}
 		}
 		
 		for(String s: adjacentStates) {

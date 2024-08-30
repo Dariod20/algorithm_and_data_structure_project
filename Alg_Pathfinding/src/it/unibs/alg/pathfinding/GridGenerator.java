@@ -8,6 +8,7 @@ public class GridGenerator {
 	
 	private String[][] grid;
 	private Map<String, Double> wG;
+	private int numObst;
 	
 	/*
 	 * n. rows (height) x n.columns (length)
@@ -15,8 +16,10 @@ public class GridGenerator {
 	public GridGenerator(int h, int l, double obstacles_percentage, double agglomeration_factor) {
 		grid = new String[h][l];
 		wG = new HashMap<>();
+		numObst = (int) ((int) (grid.length * grid[0].length) * obstacles_percentage);
+		
 		inizializeGridAndNooseNodes();
-//		insertObstacles(obstacles_percentage, agglomeration_factor);
+//		insertObstacles(agglomeration_factor);
 //		instantiatewG();
 	}
 
@@ -47,9 +50,7 @@ public class GridGenerator {
 	 * Insert the obstacles in grid based on their percentage and based on the fact
 	 * if the probability of agglomerates is high or not
 	 */
-	private void insertObstacles(double pct, double agglFact) {
-		int dim = grid.length * grid[0].length;
-		int numObst = (int) ((int) dim * pct);
+	private void insertObstacles(double agglFact) {
 		ArrayList<int[]> existingObstPos = new ArrayList<>();
 		
 		int i = 0, j = 0;
@@ -115,6 +116,18 @@ public class GridGenerator {
 			}
 			
 		} while(true);
+	}
+	
+	
+	public void setG(int[] G) {
+		int k=0;
+		for(int i=0; i < grid.length; i++) {
+			for(int j=0; j < grid[0].length; j++) {
+				if(!grid[i][j].equals("x")) {
+					G[k++] = Integer.parseInt(grid[i][j]);
+				}
+			}
+		}
 	}
 	
 	
