@@ -21,7 +21,7 @@ public class ReachGoal {
 	private List<IntArrayKey> Closed = new ArrayList<>();
 	private Map<IntArrayKey, Double> g = new HashMap<>();
 	private Map<IntArrayKey, Double> f = new HashMap<>();
-	private Map<IntArrayKey, Integer> P = new HashMap<>();
+	private Map<IntArrayKey, IntArrayKey> P = new HashMap<>();
 	private Map<Integer, Double> h = new HashMap<>();
 	
 	public ReachGoal(int[] G, Map<String, Double> wG, /*percorsi agenti preesistenti,*/ String init, String goal, int max) {
@@ -34,32 +34,52 @@ public class ReachGoal {
 	
 	public void runReachGoal() {
 		int initial = Integer.parseInt(init);
-		System.out.println("Open in step " + step++);
 		inizializeData(initial);
 		t++;
 		System.out.println("\nOpen in step " + step++);
 		addFirstStatesToOpenAndComputeTheirCost(initial);
 		Integer nextNearState = extractStateWithMinCostFromOpen();
-		boolean isGoal = false;
 		
-		while(!Open.isEmpty() && !isGoal) {
-			t++;
-			String nextState = nextNearState.toString();
-			if(!nextState.equals(goal)) {
-				System.out.println("\nOpen in step " + step++);
-				addStatesToOpenAndComputeTheirCost(nextState);
-				nextNearState = extractStateWithMinCostFromOpen();
+		while(!Open.isEmpty()) {
+			if(t <= max) {
+				if(nextNearState == 0) {
+					System.out.println("\nFrom initial position " + init + " is impossible to reach the goal in position " + goal);
+					break;
+				}
+				String nextState = nextNearState.toString();
+				if(!nextState.equals(goal)) {
+					System.out.println("\nOpen in step " + step++);
+					addStatesToOpenAndComputeTheirCost(nextState);
+					for(IntArrayKey state: Open) {
+						double cost = f.get(new IntArrayKey (new int[] {state.getKey()[0], state.getKey()[1]}));
+						System.out.printf("(%d, %d) -> %.2f\n", state.getKey()[0], state.getKey()[1], cost);
+					}
+					nextNearState = extractStateWithMinCostFromOpen();
+				} else {
+					t--;
+					System.out.print("\n\nGOAL REACHED!!");
+					System.out.print("Closed list: ");
+					for(IntArrayKey state: Closed) {
+						System.out.print("(" + state.getKey()[0] + ", " + state.getKey()[1] + "), ");
+					}
+					System.out.println("\nNumero di mosse impiegato: " + t);
+					System.out.println("Costo totale: " + f.get(new IntArrayKey(new int[] {nextNearState, t})));
+					break;
+				}
 			} else {
-				isGoal = true;
+				System.out.println("\nIt takes too long to reach the goal: t = " + t + " has exceeded max = " + max);
+				break;
 			}
 		}
-		t--;
-		System.out.println("\nNumero di mosse impiegato: " + t);
-		System.out.println("Costo totale: " + f.get(new IntArrayKey(new int[] {nextNearState, t})));
+		
+		if(Open.isEmpty()) {
+			System.out.println("\nOpen list is empty: impossibile to reach the goal!");
+		}
+		
 	}
 	
 	private void inizializeData(int initial) {
-		Open.add(new IntArrayKey (new int[] {initial, t}));
+		Open.add(new IntArrayKey (new int[] {initial, 0}));
 		
 		for(int t=0; t<=max; t++) {
 			for(int i=0; i < G.length; i++) {
@@ -72,23 +92,26 @@ public class ReachGoal {
 		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(G, wG, goal);
 		h = heuritic.getH();
 		
-//		f.put(Open.get(0), h.get(initial));
-		System.out.println("(" + initial + ", " + t + ") -> " + h.get(initial));
+		for(Entry<Integer, Double> entry : h.entrySet()) {
+            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
+		}
 		
-//		for(Entry<Integer, Double> entry : h.entrySet()) {
-//            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
-//		}
+//		f.put(Open.get(0), h.get(initial));
+		System.out.println("Open in step " + step++);
+		System.out.printf("(%d, %d) -> %.2f\n", initial, t, h.get(initial));
 	}
 	
 	private void addFirstStatesToOpenAndComputeTheirCost(int initial) {
 		for(Entry<String, Double> entry : wG.entrySet()) {
 			if(entry.getKey().endsWith("_" + init)) {
 				int nearState = Integer.parseInt(entry.getKey().split("_")[0]);
-				Open.add(new IntArrayKey (new int[] {nearState, t}));
-				g.put(new IntArrayKey(new int[] {nearState, t}), entry.getValue());
+				IntArrayKey stateIstant = new IntArrayKey (new int[] {nearState, t});
+				P.put(stateIstant, new IntArrayKey (new int[] {initial, 0}));
+				Open.add(stateIstant);
+				g.put(stateIstant, entry.getValue());
 				double cost = entry.getValue() + h.get(nearState);
-				f.put(new IntArrayKey (new int[] {nearState, t}), cost);
-				System.out.println("(" + nearState + ", " + t + ") -> " + cost);
+				f.put(stateIstant, cost);
+				System.out.printf("(%d, %d) -> %.2f\n", nearState, t, cost);
 			}
 		}
 		Open.remove(new IntArrayKey (new int[] {initial, 0}));
@@ -99,24 +122,27 @@ public class ReachGoal {
 		for(Entry<String, Double> entry : wG.entrySet()) {
 			if(entry.getKey().endsWith("_" + state)) {
 				int nearState = Integer.parseInt(entry.getKey().split("_")[0]);
-				
-				// se l'euristica è 0, stato goal non raggiungibile
-				
 				int s = Integer.parseInt(state);
-				double existing_g = g.get(new IntArrayKey (new int[] {nearState, t}));
+				IntArrayKey stateIstant = new IntArrayKey (new int[] {nearState, t});
+				double existing_g = g.get(stateIstant);
 				double new_g = g.get(new IntArrayKey (new int[] {s, t-1})) + entry.getValue();
 				if(new_g < existing_g) {
-					Open.add(new IntArrayKey (new int[] {nearState, t}));
-					g.put(new IntArrayKey (new int[] {nearState, t}), new_g);
+					if(!Open.contains(stateIstant)) {
+						P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
+						Open.add(stateIstant);
+					}
+					g.put(stateIstant, new_g);
 					double cost = new_g + h.get(nearState);
-					f.put(new IntArrayKey (new int[] {nearState, t}), cost);
-					System.out.println("(" + nearState + ", " + t + ") -> " + cost);
+					f.put(stateIstant, cost);
 				}
 			}
 		}
 	}
 	
 	private int extractStateWithMinCostFromOpen() {
+		if(Open.contains(new IntArrayKey (new int[] {17, 3}))) {
+			Open.remove(new IntArrayKey (new int[] {17, 3}));
+		}
 		IntArrayKey minCostState = new IntArrayKey(new int [2]);
 	    double minValue = Double.MAX_VALUE;
 		
@@ -127,13 +153,35 @@ public class ReachGoal {
             }
         }
 		
+		if(minValue == Double.MAX_VALUE) {
+			return 0;
+		}
+		
 		System.out.println("Min Cost State in Open: (" + minCostState.getKey()[0] + ", " + minCostState.getKey()[1] + ")");
+		t = minCostState.getKey()[1] + 1;
 		Open.remove(minCostState);
 		Closed.add(minCostState);
 		
 		return minCostState.getKey()[0];
 	}
 	
+	//servono i costi probabilmente... forse solo l'euristica
+	public void reconstructPath() {
+		List<IntArrayKey> path = new ArrayList<>();
+		IntArrayKey stateIstant = new IntArrayKey (new int[] {Integer.parseInt(goal), t});
+		IntArrayKey initial = new IntArrayKey (new int[] {Integer.parseInt(init), 0});
+		path.add(stateIstant);
+		
+		while(!stateIstant.equals(initial)) {
+			stateIstant = P.get(stateIstant);
+			path.add(stateIstant);
+		}
+		
+		System.out.print("\nPath: ");
+		for(int i=path.size()-1; i >= 0; i--) {
+			System.out.printf("(%d, %d) -> ", path.get(i).getKey()[0], path.get(i).getKey()[1]);
+		}
+	}
 	
 
 }

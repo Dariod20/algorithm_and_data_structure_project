@@ -1,14 +1,8 @@
 package it.unibs.alg.pathfinding;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Main {
-	
-	public final static double INFINITE_COST = 1000000;
-
 	
 	public static void main(String[] args) {
 		
@@ -18,6 +12,10 @@ public class Main {
 		
 		GridGenerator gridGenerator = new GridGenerator(5, 5, 0.2, 0);
 		String[][] grid = gridGenerator.getGrid();
+		
+		String init = grid[0][2];
+		String goal = grid[3][2];
+		int max = 21;
 		
 //		genero griglia in modo manuale
 		
@@ -29,7 +27,11 @@ public class Main {
 		
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
-				if(grid[i][j].equals("x"))
+				if(i==0 && j==2) 
+					System.out.print("i" + "   ");
+				else if(i==3 && j==2)
+					System.out.print("g" + "   ");
+				else if(grid[i][j].equals("x"))
 					System.out.print(grid[i][j] + "   ");
 				else if(Integer.parseInt(grid[i][j]) < 10) 
 					System.out.print(grid[i][j] + "   ");
@@ -43,17 +45,17 @@ public class Main {
 		
 		System.out.println();
 		
-		for(int i=0; i < grid.length; i++) {
-			for(int j=0; j < grid[0].length; j++) {
-				if(!grid[i][j].equals("x")) 
-					System.out.print("0 ");
-				else
-					System.out.print("1 ");
-			}
-			System.out.println();
-		}
-		
-		System.out.println();
+//		for(int i=0; i < grid.length; i++) {
+//			for(int j=0; j < grid[0].length; j++) {
+//				if(!grid[i][j].equals("x")) 
+//					System.out.print("0 ");
+//				else
+//					System.out.print("1 ");
+//			}
+//			System.out.println();
+//		}
+//		
+//		System.out.println();
 		
 //		for(Map.Entry<String, Double> entry : weightedGraph.entrySet()) {
 //	            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
@@ -65,11 +67,12 @@ public class Main {
 		
 		//G da calcolare in GridGenerator
 		//dim G = numero celle - numero ostacoli
-		int[] G = new int[21];
+		int[] G = new int[max];
 		gridGenerator.setG(G);
 		
-		ReachGoal reachGoal = new ReachGoal(G, weightedGraph, grid[0][2], grid[3][2], 21);
+		ReachGoal reachGoal = new ReachGoal(G, weightedGraph, init, goal, max);
 		reachGoal.runReachGoal();
+		reachGoal.reconstructPath();
 		
 		long end = System.currentTimeMillis();
 		

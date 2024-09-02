@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class HeuristicAlgorithm {
@@ -23,13 +24,19 @@ public class HeuristicAlgorithm {
 		}
 		
 		computeHeuristic(goal);
+		
+		int g = Integer.parseInt(goal);
+		for(Entry<Integer, Double> entry : h.entrySet()) {
+			if(entry.getValue() == 0.0 && entry.getKey() != g) {
+				h.put(entry.getKey(), Double.MAX_VALUE);
+			}
+		}
+		h.put(g, 0.0);
 	}
 	
 	private void computeHeuristic(String state) {
 		List<String> adjacentEdges = wG.keySet().stream()
-				//se non si considera ilcosto del goal per capire che si è raggiunto il goal, 
-				//il secondo controllo è rimovibile
-	            .filter(key -> key.endsWith("_" + state) && !key.startsWith(goal))
+	            .filter(key -> key.endsWith("_" + state))
 	            .collect(Collectors.toList());
 		
 		adjacentEdges.remove(state + "_" + state); 
