@@ -1,5 +1,7 @@
 package it.unibs.alg.pathfinding;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -70,7 +72,25 @@ public class Main {
 		int[] G = new int[max];
 		gridGenerator.setG(G);
 		
-		ReachGoal reachGoal = new ReachGoal(G, weightedGraph, init, goal, max);
+		//Per ottimizzare si potrebbe fare una lista semplice, ma così non si distinguono più 
+		//i percorsi degli agenti
+		List<List<IntArrayKey>> existingAgentsPaths = new ArrayList<>();
+		
+		List<IntArrayKey> a1Path = new ArrayList<>();
+		a1Path.add(new IntArrayKey(new int[] {17, 3}));
+		existingAgentsPaths.add(a1Path);
+		
+		List<IntArrayKey> a2Path = new ArrayList<>();
+		a2Path.add(new IntArrayKey(new int[] {2, 0}));
+		a2Path.add(new IntArrayKey(new int[] {7, 1}));
+		existingAgentsPaths.add(a2Path);
+		
+		
+		/*
+		 * Rimane da controllare quando l'agente si ferma su una cella: idea di considerarlo come un 
+		 * ostacolo (x) permanente o far diventare la sua euristica al massimo
+		 */
+		ReachGoal reachGoal = new ReachGoal(G, weightedGraph, existingAgentsPaths, init, goal, max);
 		reachGoal.runReachGoal();
 		reachGoal.reconstructPath();
 		

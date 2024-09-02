@@ -10,6 +10,7 @@ public class ReachGoal {
 	
 	private int[] G;
 	private Map<String, Double> wG;
+	private List<List<IntArrayKey>> existingAgentsPaths;
 	private String init;
 	private String goal;
 	private int max;
@@ -24,9 +25,11 @@ public class ReachGoal {
 	private Map<IntArrayKey, IntArrayKey> P = new HashMap<>();
 	private Map<Integer, Double> h = new HashMap<>();
 	
-	public ReachGoal(int[] G, Map<String, Double> wG, /*percorsi agenti preesistenti,*/ String init, String goal, int max) {
+	public ReachGoal(int[] G, Map<String, Double> wG, List<List<IntArrayKey>> existingAgentsPaths,
+			String init, String goal, int max) {
 		this.G = G;
 		this.wG = wG;
+		this.existingAgentsPaths = existingAgentsPaths;
 		this.init = init;
 		this.goal = goal;
 		this.max = max;
@@ -57,7 +60,7 @@ public class ReachGoal {
 					nextNearState = extractStateWithMinCostFromOpen();
 				} else {
 					t--;
-					System.out.print("\n\nGOAL REACHED!!");
+					System.out.print("\n\nGOAL REACHED!!\n");
 					System.out.print("Closed list: ");
 					for(IntArrayKey state: Closed) {
 						System.out.print("(" + state.getKey()[0] + ", " + state.getKey()[1] + "), ");
@@ -85,12 +88,16 @@ public class ReachGoal {
 			for(int i=0; i < G.length; i++) {
 				g.put(new IntArrayKey (new int[] {G[i], t}), Double.MAX_VALUE);
 				f.put(new IntArrayKey (new int[] {G[i], t}), Double.MAX_VALUE);
-				P.put(null, null);
 			}
 		}
 		
 		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(G, wG, goal);
 		h = heuritic.getH();
+		
+		for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
+			int otherAgentGoalState = otherAgentPath.get(otherAgentPath.size()-1).getKey()[0];
+			h.put(otherAgentGoalState, Double.MAX_VALUE);
+		}
 		
 		for(Entry<Integer, Double> entry : h.entrySet()) {
             System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
@@ -106,12 +113,20 @@ public class ReachGoal {
 			if(entry.getKey().endsWith("_" + init)) {
 				int nearState = Integer.parseInt(entry.getKey().split("_")[0]);
 				IntArrayKey stateIstant = new IntArrayKey (new int[] {nearState, t});
-				P.put(stateIstant, new IntArrayKey (new int[] {initial, 0}));
-				Open.add(stateIstant);
-				g.put(stateIstant, entry.getValue());
-				double cost = entry.getValue() + h.get(nearState);
-				f.put(stateIstant, cost);
-				System.out.printf("(%d, %d) -> %.2f\n", nearState, t, cost);
+				
+				for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
+					if(!otherAgentPath.contains(stateIstant)) {
+						P.put(stateIstant, new IntArrayKey (new int[] {initial, 0}));
+						Open.add(stateIstant);
+						g.put(stateIstant, entry.getValue());
+						double cost = entry.getValue() + h.get(nearState);
+						f.put(stateIstant, cost);
+						System.out.printf("(%d, %d) -> %.2f\n", nearState, t, cost);
+					} else {
+						System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
+								+ "un altro agente\n", nearState, t);
+					}
+				}
 			}
 		}
 		Open.remove(new IntArrayKey (new int[] {initial, 0}));
@@ -124,25 +139,38 @@ public class ReachGoal {
 				int nearState = Integer.parseInt(entry.getKey().split("_")[0]);
 				int s = Integer.parseInt(state);
 				IntArrayKey stateIstant = new IntArrayKey (new int[] {nearState, t});
-				double existing_g = g.get(stateIstant);
-				double new_g = g.get(new IntArrayKey (new int[] {s, t-1})) + entry.getValue();
-				if(new_g < existing_g) {
-					if(!Open.contains(stateIstant)) {
-						P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
-						Open.add(stateIstant);
+				
+				/*
+				 * Insert the best father of a state, checking if there is already inserted one with
+				 * an heuristic worse then the current one
+				 */
+				if(P.containsKey(stateIstant) && h.get(nearState) < h.get(P.get(stateIstant).getKey()[0])) {
+					P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
+				}
+				
+				for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
+					if(!otherAgentPath.contains(stateIstant)) {
+						double existing_g = g.get(stateIstant);
+						double new_g = g.get(new IntArrayKey (new int[] {s, t-1})) + entry.getValue();
+						if(new_g < existing_g) {
+							if(!Open.contains(stateIstant)) {
+								P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
+								Open.add(stateIstant);
+							}
+							g.put(stateIstant, new_g);
+							double cost = new_g + h.get(nearState);
+							f.put(stateIstant, cost);
+						}
+					} else {
+						System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
+								+ "un altro agente\n", nearState, t);
 					}
-					g.put(stateIstant, new_g);
-					double cost = new_g + h.get(nearState);
-					f.put(stateIstant, cost);
 				}
 			}
 		}
 	}
 	
 	private int extractStateWithMinCostFromOpen() {
-		if(Open.contains(new IntArrayKey (new int[] {17, 3}))) {
-			Open.remove(new IntArrayKey (new int[] {17, 3}));
-		}
 		IntArrayKey minCostState = new IntArrayKey(new int [2]);
 	    double minValue = Double.MAX_VALUE;
 		
@@ -165,7 +193,6 @@ public class ReachGoal {
 		return minCostState.getKey()[0];
 	}
 	
-	//servono i costi probabilmente... forse solo l'euristica
 	public void reconstructPath() {
 		List<IntArrayKey> path = new ArrayList<>();
 		IntArrayKey stateIstant = new IntArrayKey (new int[] {Integer.parseInt(goal), t});
