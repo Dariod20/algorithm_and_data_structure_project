@@ -17,7 +17,6 @@ public class ReachGoal {
 	
 	private int t = 0;
 	private int step = 0;
-	
 	private List<IntArrayKey> Open = new ArrayList<>();
 	private List<IntArrayKey> Closed = new ArrayList<>();
 	private Map<IntArrayKey, Double> g = new HashMap<>();
@@ -37,10 +36,7 @@ public class ReachGoal {
 	
 	public void runReachGoal() {
 		int initial = Integer.parseInt(init);
-		inizializeData(initial);
-		t++;
-		System.out.println("\nOpen in step " + step++);
-		addFirstStatesToOpenAndComputeTheirCost(initial);
+		executeFirstTwoSteps(initial);
 		Integer nextNearState = extractStateWithMinCostFromOpen();
 		
 		while(!Open.isEmpty()) {
@@ -60,13 +56,13 @@ public class ReachGoal {
 					nextNearState = extractStateWithMinCostFromOpen();
 				} else {
 					t--;
-					System.out.print("\n\nGOAL REACHED!!\n");
-					System.out.print("Closed list: ");
+					System.out.println("\n\nGOAL REACHED!!");
+					System.out.print("\nClosed list: ");
 					for(IntArrayKey state: Closed) {
 						System.out.print("(" + state.getKey()[0] + ", " + state.getKey()[1] + "), ");
 					}
-					System.out.println("\nNumero di mosse impiegato: " + t);
-					System.out.println("Costo totale: " + f.get(new IntArrayKey(new int[] {nextNearState, t})));
+					System.out.println("\n\nNumero di mosse impiegato: " + t);
+					System.out.printf("\nCosto totale: %.2f\n", f.get(new IntArrayKey(new int[] {nextNearState, t})));
 					break;
 				}
 			} else {
@@ -81,31 +77,23 @@ public class ReachGoal {
 		
 	}
 	
-	private void inizializeData(int initial) {
+	private void executeFirstTwoSteps(int initial) {
 		Open.add(new IntArrayKey (new int[] {initial, 0}));
-		
-		for(int t=0; t<=max; t++) {
-			for(int i=0; i < G.length; i++) {
-				g.put(new IntArrayKey (new int[] {G[i], t}), Double.MAX_VALUE);
-				f.put(new IntArrayKey (new int[] {G[i], t}), Double.MAX_VALUE);
-			}
-		}
 		
 		HeuristicAlgorithm heuritic = new HeuristicAlgorithm(G, wG, goal);
 		h = heuritic.getH();
 		
-		for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
-			int otherAgentGoalState = otherAgentPath.get(otherAgentPath.size()-1).getKey()[0];
-			h.put(otherAgentGoalState, Double.MAX_VALUE);
-		}
-		
-		for(Entry<Integer, Double> entry : h.entrySet()) {
-            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
-		}
+//		for(Entry<Integer, Double> entry : h.entrySet()) {
+//            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
+//		}
 		
 //		f.put(Open.get(0), h.get(initial));
 		System.out.println("Open in step " + step++);
 		System.out.printf("(%d, %d) -> %.2f\n", initial, t, h.get(initial));
+		
+		t++;
+		System.out.println("\nOpen in step " + step++);
+		addFirstStatesToOpenAndComputeTheirCost(initial);
 	}
 	
 	private void addFirstStatesToOpenAndComputeTheirCost(int initial) {
@@ -113,19 +101,26 @@ public class ReachGoal {
 			if(entry.getKey().endsWith("_" + init)) {
 				int nearState = Integer.parseInt(entry.getKey().split("_")[0]);
 				IntArrayKey stateIstant = new IntArrayKey (new int[] {nearState, t});
-				
+				boolean collision = false;
 				for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
-					if(!otherAgentPath.contains(stateIstant)) {
-						P.put(stateIstant, new IntArrayKey (new int[] {initial, 0}));
-						Open.add(stateIstant);
-						g.put(stateIstant, entry.getValue());
-						double cost = entry.getValue() + h.get(nearState);
-						f.put(stateIstant, cost);
-						System.out.printf("(%d, %d) -> %.2f\n", nearState, t, cost);
-					} else {
-						System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
-								+ "un altro agente\n", nearState, t);
+					if(otherAgentPath.contains(stateIstant)) {
+						collision = true;
 					}
+					if(t == otherAgentPath.get(otherAgentPath.size()-1).getKey()[1]) {
+						h.put(otherAgentPath.get(otherAgentPath.size()-1).getKey()[0], Double.MAX_VALUE);
+					}
+				}
+					
+				if(!collision) {
+					P.put(stateIstant, new IntArrayKey (new int[] {initial, 0}));
+					Open.add(stateIstant);
+					g.put(stateIstant, entry.getValue());
+					double cost = entry.getValue() + h.get(nearState);
+					f.put(stateIstant, cost);
+					System.out.printf("(%d, %d) -> %.2f\n", nearState, t, cost);
+				} else {
+					System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
+							+ "un altro agente", nearState, t);
 				}
 			}
 		}
@@ -148,10 +143,28 @@ public class ReachGoal {
 					P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
 				}
 				
+				boolean collision = false;
 				for(List<IntArrayKey> otherAgentPath: existingAgentsPaths) {
-					if(!otherAgentPath.contains(stateIstant)) {
+					if(otherAgentPath.contains(stateIstant)) {
+						collision = true;
+					}
+					if(t == otherAgentPath.get(otherAgentPath.size()-1).getKey()[1]) {
+						h.put(otherAgentPath.get(otherAgentPath.size()-1).getKey()[0], Double.MAX_VALUE);
+					}
+				}
+				
+				if(!collision) {
+					double new_g = g.get(new IntArrayKey (new int[] {s, t-1})) + entry.getValue();
+					if(!g.containsKey(stateIstant)) {
+						if(!Open.contains(stateIstant)) {
+							P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
+							Open.add(stateIstant);
+						}
+						g.put(stateIstant, new_g);
+						double cost = new_g + h.get(nearState);
+						f.put(stateIstant, cost);
+					} else {
 						double existing_g = g.get(stateIstant);
-						double new_g = g.get(new IntArrayKey (new int[] {s, t-1})) + entry.getValue();
 						if(new_g < existing_g) {
 							if(!Open.contains(stateIstant)) {
 								P.put(stateIstant, new IntArrayKey (new int[] {s, t-1}));
@@ -161,10 +174,10 @@ public class ReachGoal {
 							double cost = new_g + h.get(nearState);
 							f.put(stateIstant, cost);
 						}
-					} else {
-						System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
-								+ "un altro agente\n", nearState, t);
 					}
+				} else {
+					System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
+							+ "un altro agente", nearState, t);
 				}
 			}
 		}
@@ -193,7 +206,7 @@ public class ReachGoal {
 		return minCostState.getKey()[0];
 	}
 	
-	public void reconstructPath() {
+	public List<IntArrayKey> reconstructPath() {
 		List<IntArrayKey> path = new ArrayList<>();
 		IntArrayKey stateIstant = new IntArrayKey (new int[] {Integer.parseInt(goal), t});
 		IntArrayKey initial = new IntArrayKey (new int[] {Integer.parseInt(init), 0});
@@ -208,6 +221,7 @@ public class ReachGoal {
 		for(int i=path.size()-1; i >= 0; i--) {
 			System.out.printf("(%d, %d) -> ", path.get(i).getKey()[0], path.get(i).getKey()[1]);
 		}
+		return path;
 	}
 	
 

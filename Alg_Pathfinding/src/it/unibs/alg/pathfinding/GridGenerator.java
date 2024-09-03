@@ -118,19 +118,6 @@ public class GridGenerator {
 		} while(true);
 	}
 	
-	
-	public void setG(int[] G) {
-		int k=0;
-		for(int i=0; i < grid.length; i++) {
-			for(int j=0; j < grid[0].length; j++) {
-				if(!grid[i][j].equals("x")) {
-					G[k++] = Integer.parseInt(grid[i][j]);
-				}
-			}
-		}
-	}
-	
-	
 	/*
 	 * Create the map with all arcs with their weights
 	 */
@@ -176,16 +163,22 @@ public class GridGenerator {
 		return false;
 	}
 	
+	public int[] getG() {
+		int[] G = new int[(int)(grid.length * grid[0].length) - numObst];
+		int k=0;
+		for(int i=0; i < grid.length; i++) {
+			for(int j=0; j < grid[0].length; j++) {
+				if(!grid[i][j].equals("x")) {
+					G[k++] = Integer.parseInt(grid[i][j]);
+				}
+			}
+		}
+		return G;
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	public int getMax() {
+		return (int)(grid.length * grid[0].length) - numObst;
+	}
 	
 
 }
