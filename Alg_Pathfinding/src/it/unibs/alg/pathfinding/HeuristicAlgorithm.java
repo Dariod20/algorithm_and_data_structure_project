@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 public class HeuristicAlgorithm {
 	
@@ -18,6 +17,7 @@ public class HeuristicAlgorithm {
 		this.grid = grid;
 		this.goal = goal;
 	}
+	
 	
 	public void runHeuristic() {
 		
@@ -39,41 +39,6 @@ public class HeuristicAlgorithm {
 		h.put(goal, 0.0);
 	}
 	
-//	private void computeHeuristic(int cell) {
-//	    Stack<Integer> stackNextCells = new Stack<>();
-//	    stackNextCells.push(cell);
-//
-//	    while (!stackNextCells.isEmpty()) {
-//	        int currentCell = stackNextCells.pop();
-//	        int[] neighborhood = getNeighborhood(currentCell);
-//	        double[] neighborhoodCost = getNeighborhoodCost(currentCell);
-//
-//	        for (int i = 0; i < neighborhood.length; i++) {
-//	            int nextPossibleCell = currentCell + neighborhood[i];
-//	            int numCols = grid[0].length;
-//	            int nextRowIndex = 0;
-//	            int nextColIndex = 0;
-//
-//	            if (nextPossibleCell % numCols != 0) {
-//	                nextRowIndex = nextPossibleCell / numCols;
-//	                nextColIndex = nextPossibleCell % numCols - 1;
-//	            } else {
-//	                nextRowIndex = nextPossibleCell / numCols - 1;
-//	                nextColIndex = numCols - 1;
-//	            }
-//
-//	            if (grid[nextRowIndex][nextColIndex] != 0) {
-//	                double cost = h.get(currentCell) + neighborhoodCost[i];
-//	                double insertedCost = h.get(nextPossibleCell);
-//
-//	                if (insertedCost == 0 || insertedCost > cost) {
-//	                	stackNextCells.push(nextPossibleCell);
-//	                    h.put(nextPossibleCell, cost);
-//	                }
-//	            }
-//	        }
-//	    }
-//	}
 	
 	private void computeHeuristic(int cell) {
 	    List<Integer> listNextCells = new ArrayList<>();
@@ -153,6 +118,7 @@ public class HeuristicAlgorithm {
 		return new int[] {-1, 1, -(numCols+1), -numCols, -(numCols-1), (numCols-1), numCols, (numCols+1)};
 	}
 	
+	
 	private double[] getNeighborhoodCost(int cell) {
 		int numRows = grid.length;
 		int numCols = grid[0].length;
@@ -166,33 +132,34 @@ public class HeuristicAlgorithm {
 			colIndex = numCols-1;
 		}
 		if(rowIndex == 0 && colIndex == 0) {
-			return new double[] {1, 1, Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST};
 			
 		} else if(rowIndex == 0 && colIndex == (numCols-1)) {
-			return new double[] {1, 1, Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST};
 			
 		} else if(rowIndex == (numRows-1) && colIndex == 0) {
-			return new double[] {1, 1, Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST};
 			
 		} else if(rowIndex == (numRows-1) && colIndex == (numCols-1)) {
-			return new double[] {1, 1, Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST};
 			
 		} else if(rowIndex == 0) {
-			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST};
 			
 		} else if(rowIndex == (numRows-1)) {
-			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST};
 			
 		} else if(colIndex == 0) {
-			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST};
 			
 		} else if(colIndex == (numCols-1)) {
-			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
+			return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST};
 			
 		}
 		
-		return new double[] {1, 1, Math.sqrt(2), 1, Math.sqrt(2), Math.sqrt(2), 1, Math.sqrt(2)};
+		return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
 	}
+	
 	
 	public Map<Integer, Double> getH() {
 		return h;

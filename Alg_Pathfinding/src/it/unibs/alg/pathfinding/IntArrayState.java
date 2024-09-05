@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public class IntArrayState {
 	
-	private final int[] state;
+	private int[] state;
 
     public IntArrayState(int[] state) {
         this.state = state;
@@ -23,8 +23,8 @@ public class IntArrayState {
         return Arrays.hashCode(state);
     }
     
-    public int[] getState() {
-    	return state;
+    public void setState(int[] newState) {
+    	state = newState;
     }
     
     public int getCell() {

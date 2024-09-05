@@ -5,15 +5,25 @@ import java.util.List;
 
 public class Controller {
 	
+	private static final int MAX_DIM_TO_PRINT_GRID = 30;
 	private GridGenerator gridGenerator;
-	private int numAgents = 1;
+	private int numAgents = 0;
 	private List<List<IntArrayState>> existingAgentsPaths = new ArrayList<>();
         
-//        private int init = 1;
-//        private int goal = 49000000;
+    private int init = 0;
+    private int goal = 0;
 	
 	public void startAlgorithm() {
-		gridGenerator = new GridGenerator(20, 20, 0.1, 0.9);
+		double[] inputs = Utility.readInputs();
+		int numRows = (int) inputs[0];
+		int numCols = (int) inputs[1];
+		double pctObst = inputs[2];
+		double agglFact = inputs[3];
+		numAgents = (int) inputs[4];
+		init = (int) inputs[5];
+		goal = (int) inputs[6];
+		
+		gridGenerator = new GridGenerator(numRows, numCols, pctObst, agglFact);
 		int[][] grid = gridGenerator.getGrid();
 		
 //		genero griglia in modo manuale
@@ -23,8 +33,27 @@ public class Controller {
 //		grid[8][1] = grid[7][1] = grid[7][2] = grid[6][3] =
 //		grid[7][5] = grid[6][5] = grid[5][5] = grid[5][6] = grid[5][7] = grid[6][7] = grid[7][7] = 0;
 		
-		if(grid.length < 100) {
-			System.out.println("\nGRIGLIA " + grid.length + " x " + grid[0].length + "\n");
+		if(Utility.fileExists()) {
+			System.out.println("\nFILE OUTPUT ALREADY EXISTS: delete or rename it!\n");
+			return;
+		} 
+		
+		Utility.writeOnFile("Numero righe: " + numRows + "\n");
+		Utility.writeOnFile("Numero colonne: " + numCols + "\n");
+		Utility.writeOnFile("Celle attraversabili: " + (1-pctObst) + " (" + (int)((numRows*numCols)*(1-pctObst)) + "/" + (numRows*numCols) + ")\n");
+		Utility.writeOnFile("Fattore agglomerazione: " + agglFact + "\n");
+		Utility.writeOnFile("Max iterazioni: " + gridGenerator.getMax() + "\n");
+		Utility.writeOnFile("Stato iniziale: " + init + "\n");
+		Utility.writeOnFile("Stato goal: " + goal + "\n");
+		Utility.writeOnFile("Numero agenti: " + numAgents + "\n");
+		if(numAgents > 1) {
+			Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali\n");
+		} else {
+			Utility.writeOnFile("\nNessun agente preesistente\n");
+		}
+		
+		if(grid.length <= MAX_DIM_TO_PRINT_GRID) {
+			Utility.writeOnFile("\nGRIGLIA " + grid.length + " x " + grid[0].length + "\n\n");
 			printGrid(grid);
 		}
 		findPath(grid);
@@ -34,19 +63,20 @@ public class Controller {
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
 				if(grid[i][j] == 0)
-					System.out.print("X   ");
+					Utility.writeOnFile("X    ");
 				else if(grid[i][j] < 10) 
-					System.out.print(grid[i][j] + "   ");
+					Utility.writeOnFile(grid[i][j] + "    ");
 				else if(grid[i][j] < 100) 
-					System.out.print(grid[i][j] + "  ");
-				else
-					System.out.print(grid[i][j] + " ");
+					Utility.writeOnFile(grid[i][j] + "   ");
+				else if(grid[i][j] < 1000) 
+					Utility.writeOnFile(grid[i][j] + "  ");
+				else 
+					Utility.writeOnFile(grid[i][j] + " ");
 			}
-			System.out.println();
+			Utility.writeOnFile("\n");
 		}
 		
-		System.out.println();
-		System.out.println();
+		Utility.writeOnFile("\n");
 	}
 	
 	private void findPath(int[][] grid) {
@@ -68,17 +98,28 @@ public class Controller {
 //				goal = grid[0][4];
 //			}
 			
-			int init = gridGenerator.getRandomInit();
-			int goal = gridGenerator.getRandomGoal(init);
+//			int init = gridGenerator.getRandomInit();
+//			int goal = gridGenerator.getRandomGoal(init);
 			
-			System.out.println("Agent " + (n+1));
-			System.out.println("Initial state: " + init);
-			System.out.println("Goal state: " + goal + "\n");
+			Utility.writeOnFile("\nAgente " + (n+1) + "\n");
+			Utility.writeOnFile("Suo stato iniziale: " + init + "\n");
+			Utility.writeOnFile("Suo stato goal: " + goal + "\n\n");
 			
 			ReachGoal reachGoal = new ReachGoal(grid, existingAgentsPaths, init, goal, gridGenerator.getMax());
 			reachGoal.runReachGoal();
 			if(reachGoal.getSuccessful()) {
-				existingAgentsPaths.add(reachGoal.reconstructPath());
+				List<IntArrayState> path = reachGoal.reconstructPath();
+				existingAgentsPaths.add(path);
+				
+				Utility.writeOnFile("\nPath: \n");
+				for(int i=path.size()-1; i >= 0; i--) {
+					if(i==0) {
+						Utility.writeOnFile("(" + path.get(i).getCell() + ", " + path.get(i).getIstant() + ")");
+					} else {
+						Utility.writeOnFile("(" + path.get(i).getCell() + ", " + path.get(i).getIstant() + ") -> ");
+					}
+				}
+				
 			} else {
 				List<IntArrayState> onlyInitAndGoal = new ArrayList<>();
 				onlyInitAndGoal.add(new IntArrayState(new int[] {init, 0}));
@@ -86,10 +127,8 @@ public class Controller {
 				existingAgentsPaths.add(onlyInitAndGoal);
 			}
 			
-			if(grid.length < 100) {
-				System.out.print("\n\n\n");
-				System.out.println("Simulazione dello spostamento degli agenti finora presi in considerazione "
-						+ "\ndalla loro cella di partenza a quella di arrivo sulla griglia.\n");
+			if(grid.length <= MAX_DIM_TO_PRINT_GRID) {
+				Utility.writeOnFile("\n\nSimulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.\n\n");
 				
 				int maxNumAgents = getMaxNumAgentsOnTheSameCell(grid);
 				
@@ -99,15 +138,15 @@ public class Controller {
 						int counter = 0;
 						if(grid[i][j] == 0) {
 							for(int k=0; k < maxNumAgents; k++) {
-								System.out.print("X");
+								Utility.writeOnFile("X");
 							}
-							System.out.print(" | ");
+							Utility.writeOnFile(" | ");
 						} else {
 							for(int k=0; k < existingAgentsPaths.size(); k++) {
 								for(IntArrayState cell: existingAgentsPaths.get(k)) {
-									if(cell.getState()[0] == grid[i][j]) {
+									if(cell.getCell() == grid[i][j]) {
 										counter++;
-										System.out.print((k+1));
+										Utility.writeOnFile(""+(k+1));
 										emptyCell = false;
 										break;
 									}
@@ -115,27 +154,27 @@ public class Controller {
 							}
 							if(emptyCell) {
 								for(int k=0; k < maxNumAgents; k++) {
-									System.out.print(" ");
+									Utility.writeOnFile(" ");
 								}
 							} else {
 								for(int k=0; k < (maxNumAgents - counter); k++) {
-									System.out.print(" ");
+									Utility.writeOnFile(" ");
 								}
 							}
-							System.out.print(" | ");
+							Utility.writeOnFile(" | ");
 						}
 					}
-					System.out.println();
+					Utility.writeOnFile("\n");
 					for(int l=0; l < grid[0].length; l++) {
-						System.out.print("---");
+						Utility.writeOnFile("---");
 						for(int k=0; k < maxNumAgents; k++) {
-							System.out.print("-");
+							Utility.writeOnFile("-");
 						}
 					}
-					System.out.println();
+					Utility.writeOnFile("\n");
 				}
 			}
-			System.out.println("\n");
+			Utility.writeOnFile("\n\n");
 		}
 	}
 	
@@ -147,7 +186,7 @@ public class Controller {
 				if(grid[i][j] != 0) {
 					for(List<IntArrayState> existingPath: existingAgentsPaths) {
 						for(IntArrayState cell: existingPath) {
-							if(cell.getState()[0] == grid[i][j]) {
+							if(cell.getCell() == grid[i][j]) {
 								counter++;
 							}
 						}

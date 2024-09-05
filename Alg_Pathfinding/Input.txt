@@ -1,0 +1,7 @@
+numero_righe 7000
+numero_colonne 7000
+percentuale_ostacoli 0
+pct_fatt_aggl_ostacoli 0
+num_agenti 1
+stato_iniziale 1
+stato_finale 49000000
