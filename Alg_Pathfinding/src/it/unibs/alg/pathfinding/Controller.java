@@ -17,12 +17,15 @@ public class Controller {
 	 */
 	
 	private GridGenerator gridGenerator;
-	private int numAgents = 4;
+	private int numAgents = 1;
 	private List<List<IntArrayState>> existingAgentsPaths = new ArrayList<>();
+        
+        private int init = 1;
+        private int goal = 49000000;
 	
 	public void startAlgorithm() {
 		//da migliorare il fattore di agglomerazione !!!
-		gridGenerator = new GridGenerator(15, 15, 0.2, 0.6);
+		gridGenerator = new GridGenerator(7000, 7000, 0, 0);
 		int[][] grid = gridGenerator.getGrid();
 		
 //		genero griglia in modo manuale
@@ -32,8 +35,10 @@ public class Controller {
 //		grid[8][1] = grid[7][1] = grid[7][2] = grid[6][3] =
 //		grid[7][5] = grid[6][5] = grid[5][5] = grid[5][6] = grid[5][7] = grid[6][7] = grid[7][7] = 0;
 		
-		System.out.println("\nGRIGLIA " + grid.length + " x " + grid[0].length + "\n");
-		printGrid(grid);
+		if(grid.length < 100) {
+			System.out.println("\nGRIGLIA " + grid.length + " x " + grid[0].length + "\n");
+			printGrid(grid);
+		}
 		findPath(grid);
 	}
 	
@@ -58,7 +63,7 @@ public class Controller {
 	
 	
 	/*
-	 * Due alternative possibili se per un agente è impossibile da init andare in goal:
+	 * Due alternative possibili se per un agente ï¿½ impossibile da init andare in goal:
 	 * - Ignorarlo e passare al prossimo
 	 * - Cambiare il suo goal (o il suo init)
 	 */
@@ -78,8 +83,8 @@ public class Controller {
 //				goal = grid[9][9];
 //			}
 			
-			int init = gridGenerator.getRandomInit();
-			int goal = gridGenerator.getRandomGoal(init);
+//			int init = gridGenerator.getRandomInit();
+//			int goal = gridGenerator.getRandomGoal(init);
 			
 			System.out.println("Agent " + (n+1));
 			System.out.println("Initial state: " + init);
