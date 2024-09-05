@@ -114,6 +114,7 @@ public class HeuristicAlgorithm {
 
 	
 	private int[] getNeighborhood(int cell) {
+		int numRows = grid.length;
 		int numCols = grid[0].length;
 		int rowIndex = 0;
 		int colIndex = 0;
@@ -130,16 +131,16 @@ public class HeuristicAlgorithm {
 		} else if(rowIndex == 0 && colIndex == (numCols-1)) {
 			return new int[] {-1, numCols, (numCols-1)};
 			
-		} else if(rowIndex == (numCols-1) && colIndex == 0) {
-			return new int[] {-numCols, 1, -(numCols+1)};
+		} else if(rowIndex == (numRows-1) && colIndex == 0) {
+			return new int[] {-numCols, 1, -(numCols-1)};
 			
-		} else if(rowIndex == (numCols-1) && colIndex == (numCols-1)) {
+		} else if(rowIndex == (numRows-1) && colIndex == (numCols-1)) {
 			return new int[] {-numCols, -1, -(numCols+1)};
 			
 		} else if(rowIndex == 0) {
 			return new int[] {-1, 1, numCols, (numCols-1), (numCols+1)};
 			
-		} else if(rowIndex == (numCols-1)) {
+		} else if(rowIndex == (numRows-1)) {
 			return new int[] {-1, 1, -numCols, -(numCols+1), -(numCols-1)};
 			
 		} else if(colIndex == 0) {
@@ -153,6 +154,7 @@ public class HeuristicAlgorithm {
 	}
 	
 	private double[] getNeighborhoodCost(int cell) {
+		int numRows = grid.length;
 		int numCols = grid[0].length;
 		int rowIndex = 0;
 		int colIndex = 0;
@@ -169,16 +171,16 @@ public class HeuristicAlgorithm {
 		} else if(rowIndex == 0 && colIndex == (numCols-1)) {
 			return new double[] {1, 1, Math.sqrt(2)};
 			
-		} else if(rowIndex == (numCols-1) && colIndex == 0) {
+		} else if(rowIndex == (numRows-1) && colIndex == 0) {
 			return new double[] {1, 1, Math.sqrt(2)};
 			
-		} else if(rowIndex == (numCols-1) && colIndex == (numCols-1)) {
+		} else if(rowIndex == (numRows-1) && colIndex == (numCols-1)) {
 			return new double[] {1, 1, Math.sqrt(2)};
 			
 		} else if(rowIndex == 0) {
 			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
 			
-		} else if(rowIndex == (numCols-1)) {
+		} else if(rowIndex == (numRows-1)) {
 			return new double[] {1, 1, 1, Math.sqrt(2), Math.sqrt(2)};
 			
 		} else if(colIndex == 0) {

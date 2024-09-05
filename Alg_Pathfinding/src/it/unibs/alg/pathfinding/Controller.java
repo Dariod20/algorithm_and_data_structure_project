@@ -17,15 +17,14 @@ public class Controller {
 	 */
 	
 	private GridGenerator gridGenerator;
-	private int numAgents = 1;
+	private int numAgents = 4;
 	private List<List<IntArrayState>> existingAgentsPaths = new ArrayList<>();
         
-        private int init = 1;
-        private int goal = 49000000;
+//        private int init = 1;
+//        private int goal = 49000000;
 	
 	public void startAlgorithm() {
-		//da migliorare il fattore di agglomerazione !!!
-		gridGenerator = new GridGenerator(7000, 7000, 0, 0);
+		gridGenerator = new GridGenerator(4, 7, 0, 0);
 		int[][] grid = gridGenerator.getGrid();
 		
 //		genero griglia in modo manuale
@@ -69,19 +68,22 @@ public class Controller {
 	 */
 	private void findPath(int[][] grid) {
 		for(int n = 0; n < numAgents; n++) {
-//			int init = -1;
-//			int goal = -1;
+			int init = -1;
+			int goal = -1;
 			
-//			if(n == 0) {
-//				init = grid[5][3];
-//				goal = grid[1][1];
-//			} else if(n == 1) {
-//				init = grid[3][1];
-//				goal = grid[3][3];
-//			} else {
-//				init = grid[0][0];
-//				goal = grid[9][9];
-//			}
+			if(n == 0) {
+				init = grid[2][0];
+				goal = grid[0][2];
+			} else if(n == 1) {
+				init = grid[1][0];
+				goal = grid[3][2];
+			} else if(n == 2) {
+				init = grid[1][6];
+				goal = grid[1][4];
+			} else {
+				init = grid[3][4];
+				goal = grid[0][4];
+			}
 			
 //			int init = gridGenerator.getRandomInit();
 //			int goal = gridGenerator.getRandomGoal(init);
