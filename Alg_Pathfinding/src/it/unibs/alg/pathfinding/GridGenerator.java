@@ -5,9 +5,9 @@ import java.util.List;
 
 public class GridGenerator {
 	
+	private static final int AGGL_FACTOR_LIMIT = 10;
 	private int[][] grid;
 	private int numObst;
-	private int numAgents;
 	private List<Integer> existingAgentsInit = new ArrayList<>();
 	private List<Integer> existingAgentsGoal = new ArrayList<>();;
 	
@@ -60,24 +60,38 @@ public class GridGenerator {
 		
 		while(count <= numObst) {
 			if(Math.random() < agglFact) {
-				int [] newObst = getNewObstPos(existingObstPos);
-				i = newObst[0];
-				j = newObst[1];
-				obstPos = newObst;
+				obstPos = getNewObstPos(existingObstPos);
+				if(obstPos != null) {
+					i = obstPos[0];
+					j = obstPos[1];
+					grid[i][j] = 0;
+				} else {
+					obstPos = getRandomObstPos();
+				}
+				existingObstPos.add(obstPos);
 			} else {
-				do {
-					i = (int) (grid.length * Math.random());
-					j = (int) (grid[0].length * Math.random());
-					obstPos[0] = i;
-					obstPos[1] = j;
-				} while(grid[i][j] == 0);
+				obstPos = getRandomObstPos();
+				existingObstPos.add(obstPos);
 			}
-			
-			grid[i][j] = 0;
-			existingObstPos.add(obstPos);
 			
 			count++;
 		}
+	}
+	
+	private int[] getRandomObstPos() {
+		int[] obstPos = new int[2];
+		int i = 0;
+		int j = 0;
+		do {
+			i = (int) (grid.length * Math.random());
+			j = (int) (grid[0].length * Math.random());
+		} while(grid[i][j] == 0);
+
+		obstPos[0] = i;
+		obstPos[1] = j;
+		grid[i][j] = 0;
+		
+		return obstPos;
 	}
 	
 	/*
@@ -85,9 +99,11 @@ public class GridGenerator {
 	 * overlap the new obstacles with an existing one
 	 */
 	private int[] getNewObstPos(ArrayList<int[]> existingObstPos) {
-		int elem = (int) (existingObstPos.size() * Math.random());
-		int[] obst = existingObstPos.get(elem);
+		int count = 0;
+		int[] obst = new int[2];
 		do {
+			int elem = (int) (existingObstPos.size() * Math.random());
+			obst = existingObstPos.get(elem);
 			double r = Math.random();
 			if(r < 0.25 && obst[0]-1 >= 0 && grid[obst[0]-1][obst[1]] != 0) {
 				obst[0] = obst[0]-1;
@@ -105,8 +121,9 @@ public class GridGenerator {
 				obst[1] = obst[1]+1;
 				return obst;
 			}
-			
-		} while(true);
+			count++;
+		} while(count < AGGL_FACTOR_LIMIT);
+		return null;
 	}
 	
 	public int getRandomInit() {
@@ -134,7 +151,10 @@ public class GridGenerator {
 		}
 	
 	public int getMax() {
-		return Math.round((grid.length * grid[0].length - numObst) /*/ 3*/);
+		if((grid.length * grid[0].length) < 2500 ) {
+			return (grid.length * grid[0].length) - numObst;
+		}
+		return Math.round((grid.length * grid[0].length - numObst) / 3);
 	}
 	
 

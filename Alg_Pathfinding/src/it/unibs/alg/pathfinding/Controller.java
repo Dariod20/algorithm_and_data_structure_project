@@ -5,26 +5,15 @@ import java.util.List;
 
 public class Controller {
 	
-	/*
-	 * Valori massimi consentiti per pct ostacoli e fattAggl:
-	 * 0.9 e 0
-	 * 0.6 e 0.1
-	 * 0.4 e 0.2
-	 * 0.3 e 0.4
-	 * 0.2 e 0.6
-	 * 0.1 e 0.9
-	 * Input e output da file
-	 */
-	
 	private GridGenerator gridGenerator;
-	private int numAgents = 4;
+	private int numAgents = 1;
 	private List<List<IntArrayState>> existingAgentsPaths = new ArrayList<>();
         
 //        private int init = 1;
 //        private int goal = 49000000;
 	
 	public void startAlgorithm() {
-		gridGenerator = new GridGenerator(4, 7, 0, 0);
+		gridGenerator = new GridGenerator(20, 20, 0.1, 0.9);
 		int[][] grid = gridGenerator.getGrid();
 		
 //		genero griglia in modo manuale
@@ -60,33 +49,27 @@ public class Controller {
 		System.out.println();
 	}
 	
-	
-	/*
-	 * Due alternative possibili se per un agente � impossibile da init andare in goal:
-	 * - Ignorarlo e passare al prossimo
-	 * - Cambiare il suo goal (o il suo init)
-	 */
 	private void findPath(int[][] grid) {
 		for(int n = 0; n < numAgents; n++) {
-			int init = -1;
-			int goal = -1;
 			
-			if(n == 0) {
-				init = grid[2][0];
-				goal = grid[0][2];
-			} else if(n == 1) {
-				init = grid[1][0];
-				goal = grid[3][2];
-			} else if(n == 2) {
-				init = grid[1][6];
-				goal = grid[1][4];
-			} else {
-				init = grid[3][4];
-				goal = grid[0][4];
-			}
+//			int init = -1;
+//			int goal = -1;
+//			if(n == 0) {
+//				init = grid[2][0];
+//				goal = grid[0][2];
+//			} else if(n == 1) {
+//				init = grid[1][0];
+//				goal = grid[3][2];
+//			} else if(n == 2) {
+//				init = grid[1][6];
+//				goal = grid[1][4];
+//			} else {
+//				init = grid[3][4];
+//				goal = grid[0][4];
+//			}
 			
-//			int init = gridGenerator.getRandomInit();
-//			int goal = gridGenerator.getRandomGoal(init);
+			int init = gridGenerator.getRandomInit();
+			int goal = gridGenerator.getRandomGoal(init);
 			
 			System.out.println("Agent " + (n+1));
 			System.out.println("Initial state: " + init);
