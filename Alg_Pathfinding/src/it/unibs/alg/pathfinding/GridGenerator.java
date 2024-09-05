@@ -1,45 +1,39 @@
 package it.unibs.alg.pathfinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class GridGenerator {
 	
 	private int[][] grid;
-	private Map<String, Double> wG;
 	private int numObst;
+	private int numAgents;
+	private List<Integer> existingAgentsInit = new ArrayList<>();
+	private List<Integer> existingAgentsGoal = new ArrayList<>();;
 	
 	/*
 	 * n. rows (height) x n.columns (length)
 	 */
 	public GridGenerator(int h, int l, double obstacles_percentage, double agglomeration_factor) {
 		grid = new int[h][l];
-		wG = new HashMap<>();
-		numObst = 21; //(int) ((int) (grid.length * grid[0].length) * obstacles_percentage);
+		numObst = (int) ((int) (grid.length * grid[0].length) * obstacles_percentage);
 		
-		inizializeGridAndNooseNodes();
-//		insertObstacles(agglomeration_factor);
-//		instantiatewG();
+		inizializeGrid();
+		insertObstacles(agglomeration_factor);
 	}
 
 	public int[][] getGrid() {
 		return grid;
 	}
-
-	public Map<String, Double> getwG() {
-		return wG;
-	}
 	
 	/*
-	 * Initialize grid with ordinal numbers and then add the noose nodes to the map
+	 * Initialize grid with ordinal numbers
 	 */
-	private void inizializeGridAndNooseNodes() {
+	private void inizializeGrid() {
 		int value = 1;
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
 				grid[i][j] = value;
-				wG.put(value + "_" + value, 1.0);
 				value++;
 			}
 		}
@@ -57,7 +51,6 @@ public class GridGenerator {
 		if(numObst > 0) {
 			i = (int) (grid.length * Math.random());
 			j = (int) (grid[0].length * Math.random());
-			wG.remove(grid[i][j] + "_" + grid[i][j]);
 			grid[i][j] = 0;
 			obstPos[0] = i;
 			obstPos[1] = j;
@@ -80,7 +73,6 @@ public class GridGenerator {
 				} while(grid[i][j] == 0);
 			}
 			
-			wG.remove(grid[i][j] + "_" + grid[i][j]);
 			grid[i][j] = 0;
 			existingObstPos.add(obstPos);
 			
@@ -117,53 +109,32 @@ public class GridGenerator {
 		} while(true);
 	}
 	
-	/*
-	 * Create the map with all arcs with their weights
-	 */
-//	/*private*/public void instantiatewG() {
-//		double square2 = Math.sqrt(2);
-//		
-//		for(int i=0; i < grid.length; i++) {
-//			for(int j=0; j < grid[0].length; j++) {
-//				if(isAnObstacle(i, j)) {
-//					continue;
-//				}
-//				int currentValue = grid[i][j];
-//				if(i-1 >= 0) {
-//					if(!isAnObstacle(i-1, j)) 
-//						wG.put(currentValue + "_" + grid[i-1][j], 1.0);
-//					if(j+1 < grid[0].length && !isAnObstacle(i-1, j+1))
-//						wG.put(currentValue + "_" + grid[i-1][j+1], square2);
-//					if(j-1 >= 0 && !isAnObstacle(i-1, j-1))
-//						wG.put(currentValue + "_" + grid[i-1][j-1], square2);
-//				}
-//				if(j+1 < grid[0].length) {
-//					if(!isAnObstacle(i, j+1))
-//						wG.put(currentValue + "_" + grid[i][j+1], 1.0);
-//					if(i+1 < grid.length && !isAnObstacle(i+1, j+1))
-//						wG.put(currentValue + "_" + grid[i+1][j+1], square2);
-//				}
-//				if(i+1 < grid.length) {
-//					if(!isAnObstacle(i+1, j))
-//						wG.put(currentValue + "_" + grid[i+1][j], 1.0);
-//					if(j-1 >= 0 && !isAnObstacle(i+1, j-1))
-//						wG.put(currentValue + "_" + grid[i+1][j-1], square2);
-//				}
-//				if(j-1 >= 0 && !isAnObstacle(i, j-1))
-//					wG.put(currentValue + "_" + grid[i][j-1], 1.0);
-//			}
-//		}
-//	}
-//	
-//	private boolean isAnObstacle(int i, int j) {
-//		if(grid[i][j] == 0) {
-//			return true;
-//		}
-//		return false;
-//	}
+	public int getRandomInit() {
+		int i = (int) (grid.length * Math.random());
+		int j = (int) (grid[0].length * Math.random());
+		while(grid[i][j] == 0 || existingAgentsInit.contains(grid[i][j])) {
+			i = (int) (grid.length * Math.random());
+			j = (int) (grid[0].length * Math.random());
+		}
+		
+		existingAgentsInit.add(grid[i][j]);
+		return grid[i][j];
+	}
+	
+	public int getRandomGoal(int currentInit) {
+		int i = (int) (grid.length * Math.random());
+		int j = (int) (grid[0].length * Math.random());
+		while(grid[i][j] == 0 || existingAgentsGoal.contains(grid[i][j]) || grid[i][j] == currentInit ) {
+			i = (int) (grid.length * Math.random());
+			j = (int) (grid[0].length * Math.random());
+		}
+		
+		existingAgentsGoal.add(grid[i][j]);
+		return grid[i][j];
+		}
 	
 	public int getMax() {
-		return Math.round((grid.length * grid[0].length - numObst) / 3);
+		return Math.round((grid.length * grid[0].length - numObst) /*/ 3*/);
 	}
 	
 

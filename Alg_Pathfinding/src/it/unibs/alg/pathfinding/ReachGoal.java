@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class ReachGoal {
 	
@@ -54,7 +55,7 @@ public class ReachGoal {
 					chosenNextCell = extractStateWithMinCostFromOpen();
 				} else {
 					t--;
-					System.out.println("\n\nGOAL REACHED!!");
+					System.out.println("\nGOAL REACHED!!");
 					System.out.print("\nClosed list: ");
 					for(IntArrayState state: Closed) {
 						System.out.print("(" + state.getCell() + ", " + state.getIstant() + "), ");
