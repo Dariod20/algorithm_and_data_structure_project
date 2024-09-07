@@ -7,19 +7,22 @@ public class GridGenerator {
 	
 	private static final int AGGL_FACTOR_LIMIT = 10;
 	private int[][] grid;
-	private int numObst;
+	private double pct_obst;
+	private double aggl_fact;
+	private int initRowIndex = 0;
+	private int initColIndex = 0;
 	private List<Integer> existingAgentsInit = new ArrayList<>();
 	private List<Integer> existingAgentsGoal = new ArrayList<>();;
 	
 	/*
 	 * n. rows (height) x n.columns (length)
 	 */
-	public GridGenerator(int h, int l, double obstacles_percentage, double agglomeration_factor) {
+	public GridGenerator(int h, int l, double pct_obst, double aggl_fact) {
 		grid = new int[h][l];
-		numObst = (int) ((int) (grid.length * grid[0].length) * obstacles_percentage);
+		this.pct_obst = pct_obst;
+		this.aggl_fact = aggl_fact;
 		
 		inizializeGrid();
-		insertObstacles(agglomeration_factor);
 	}
 
 	public int[][] getGrid() {
@@ -39,13 +42,73 @@ public class GridGenerator {
 		}
 	}
 	
+	public void checkEntryInitGoalNotObstacoles(int entryInit, int entryGoal) {
+		int numCols = grid[0].length;
+		int rowIndex = 0;
+		int colIndex = 0;
+		
+		if(entryInit % numCols != 0) {
+			rowIndex = entryInit / numCols;
+			colIndex = entryInit % numCols-1;
+		} else {
+			rowIndex = entryInit / numCols-1;
+			colIndex = numCols-1;
+		}
+		if(grid[rowIndex][colIndex] == 0) {
+			grid[rowIndex][colIndex] = entryInit;
+			int [] rndObst = new int[2];
+			do {
+				rndObst = getRandomObstPos();
+			} while(rowIndex == rndObst[0] && colIndex == rndObst[1]);
+		}
+		existingAgentsInit.add(entryInit);
+		
+		if(entryGoal % numCols != 0) {
+			rowIndex = entryGoal / numCols;
+			colIndex = entryGoal % numCols-1;
+		} else {
+			rowIndex = entryGoal / numCols-1;
+			colIndex = numCols-1;
+		}
+		if(grid[rowIndex][colIndex] == 0) {
+			grid[rowIndex][colIndex] = entryGoal;
+			int [] rndObst = new int[2];
+			do {
+				rndObst = getRandomObstPos();
+			} while(rowIndex == rndObst[0] && colIndex == rndObst[1]);
+		}
+		existingAgentsGoal.add(entryGoal);
+	}
+	
+	public int insertManuallyObstacles(List<String> inputs, int start) {
+		int i = start;
+		int numCols = grid[0].length;
+		int rowIndex = 0;
+		int colIndex = 0;
+		String data = inputs.get(i++);
+		while(!data.equals("true")) {
+			int cell = Integer.parseInt(data);
+			if(cell % numCols != 0) {
+				rowIndex = cell / numCols;
+				colIndex = cell % numCols-1;
+			} else {
+				rowIndex = cell / numCols-1;
+				colIndex = numCols-1;
+			}
+			grid[rowIndex][colIndex] = 0;
+			data = inputs.get(i++);
+		}
+		return i++;
+	}
+	
+	
 	/*
 	 * Insert the obstacles in grid based on their percentage and based on the fact
 	 * if the probability of agglomerates is high or not
 	 */
-	private void insertObstacles(double agglFact) {
+	public void insertRandomObstacles() {
+		int numObst = (int) ((int) (grid.length * grid[0].length) * pct_obst);
 		ArrayList<int[]> existingObstPos = new ArrayList<>();
-		
 		int i = 0, j = 0;
 		int[] obstPos = new int[2];
 		if(numObst > 0) {
@@ -59,7 +122,7 @@ public class GridGenerator {
 		int count = 2;
 		
 		while(count <= numObst) {
-			if(Math.random() < agglFact) {
+			if(Math.random() < aggl_fact) {
 				obstPos = getNewObstPos(existingObstPos);
 				if(obstPos != null) {
 					i = obstPos[0];
@@ -135,13 +198,17 @@ public class GridGenerator {
 		}
 		
 		existingAgentsInit.add(grid[i][j]);
+		initRowIndex = i;
+		initColIndex = j;
 		return grid[i][j];
 	}
 	
-	public int getRandomGoal(int currentInit) {
+	public int getRandomGoal(int minPathLength) {
 		int i = (int) (grid.length * Math.random());
 		int j = (int) (grid[0].length * Math.random());
-		while(grid[i][j] == 0 || existingAgentsGoal.contains(grid[i][j]) || grid[i][j] == currentInit ) {
+		while(grid[i][j] == 0 || existingAgentsGoal.contains(grid[i][j]) || 
+				(i == initRowIndex && j == initColIndex) || 
+				(Math.abs(initRowIndex-i) < minPathLength && Math.abs(initColIndex-j) < minPathLength) ) {
 			i = (int) (grid.length * Math.random());
 			j = (int) (grid[0].length * Math.random());
 		}
@@ -150,12 +217,4 @@ public class GridGenerator {
 		return grid[i][j];
 		}
 	
-	public int getMax() {
-		if((grid.length * grid[0].length) < 2500 ) {
-			return (grid.length * grid[0].length) - numObst;
-		}
-		return Math.round((grid.length * grid[0].length - numObst) / 3);
-	}
-	
-
 }

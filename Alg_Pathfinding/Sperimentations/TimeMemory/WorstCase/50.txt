@@ -1,0 +1,31 @@
+Numero righe: 50
+Numero colonne: 50
+Celle attraversabili: 1.0 (2500/2500)
+Fattore agglomerazione: 0.0
+Max iterazioni: 2500
+Stato iniziale: 1
+Stato goal: 1500
+Numero agenti: 1
+
+Nessun agente preesistente
+
+Agente 1
+Suo stato iniziale: 1
+Suo stato goal: 1500
+
+Numero di stati espansi: 352
+Numero totale di stati inseriti nella Open: 1283
+Lunghezza del percorso: 49
+Costo del percorso: 61,01
+
+Path: 
+(1, 0) -> (52, 1) -> (103, 2) -> (154, 3) -> (205, 4) -> (256, 5) -> (307, 6) -> (358, 7) -> (409, 8) -> (460, 9) -> (461, 10) -> (462, 11) -> (463, 12) -> (464, 13) -> (465, 14) -> (466, 15) -> (467, 16) -> (468, 17) -> (469, 18) -> (470, 19) -> (471, 20) -> (472, 21) -> (473, 22) -> (474, 23) -> (475, 24) -> (476, 25) -> (477, 26) -> (478, 27) -> (529, 28) -> (580, 29) -> (631, 30) -> (682, 31) -> (733, 32) -> (784, 33) -> (835, 34) -> (886, 35) -> (937, 36) -> (988, 37) -> (1039, 38) -> (1090, 39) -> (1141, 40) -> (1192, 41) -> (1243, 42) -> (1294, 43) -> (1345, 44) -> (1396, 45) -> (1447, 46) -> (1498, 47) -> (1499, 48) -> (1500, 49)
+
+Numero mosse wait: 0
+
+Heap Size corrente (memoria occupata): 266,338 megabytes su 4234,150 megabytes
+
+Memoria dell'Heap Size corrente libera: 260,047 megabytes
+
+Tempo di esecuzione: 98 millisecondi
+

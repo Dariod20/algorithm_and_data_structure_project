@@ -7,26 +7,26 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utility {
 	
-	public static final int NUM_INPUTS = 7;
 	public static final int COST = 1;
 	public static final double SQRT_COST = Math.sqrt(2);
 	public static final String INPUT_FILE = "Input.txt";
 	public static final String OUTPUT_FILE = "Output.txt";
 
-	public static double[] readInputs() {
+	public static List<String> readInputs() {
 		BufferedReader input = null;
-		double[] inputs = new double[NUM_INPUTS];
+		List<String> inputs = new ArrayList<>();
 		try {
 			input = new BufferedReader(new FileReader(INPUT_FILE));
 			List<String> lines = input.lines().collect(Collectors.toList());
 			for(int i=0; i < lines.size(); i++) {
 				 String dataLine[] = lines.get(i).split(" ");
-				 inputs[i] = Double.parseDouble(dataLine[1]);
+				 inputs.add(dataLine[1]);
 			}
         }
 		catch (FileNotFoundException e) {
@@ -63,6 +63,11 @@ public class Utility {
 			return true;
 		}
 		return false;
+	}
+	
+	public static void deleteFile() {
+		File fileOld = new File(OUTPUT_FILE);
+		fileOld.delete();
 	}
 
 }

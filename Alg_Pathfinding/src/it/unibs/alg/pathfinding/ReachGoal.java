@@ -35,12 +35,12 @@ public class ReachGoal {
 	
 	public void runReachGoal() {
 		executeFirstTwoSteps(init);
-		Integer chosenNextCell = extractStateWithMinCostFromOpen();
+		int chosenNextCell = extractStateWithMinCostFromOpen();
 		
-		while(!Open.isEmpty()) {
+		do {
 			if(t <= max) {
 				if(chosenNextCell == 0) {
-					Utility.writeOnFile("\nDallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal + "\n");
+					Utility.writeOnFile("Dallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal);
 					successful = false;
 					break;
 				}
@@ -63,8 +63,7 @@ public class ReachGoal {
 					Utility.writeOnFile("Numero di stati espansi: " + Closed.size()/*step*/);
 					Utility.writeOnFile("\nNumero totale di stati inseriti nella Open: " + (P.size()+1));
 					Utility.writeOnFile("\nLunghezza del percorso: " + t);
-					Utility.writeOnFile("\nCosto del percorso: " + String.format("%.2f", f.get(new IntArrayState(new int[] {chosenNextCell, t}))));
-					Utility.writeOnFile("\nNumero mosse wait: ???\n");
+					Utility.writeOnFile("\nCosto del percorso: " + String.format("%.2f", f.get(new IntArrayState(new int[] {chosenNextCell, t}))) + "\n");
 					break;
 				}
 			} else {
@@ -72,7 +71,7 @@ public class ReachGoal {
 				successful = false;
 				break;
 			}
-		}
+		} while(!Open.isEmpty());
 		
 		if(Open.isEmpty()) {
 			Utility.writeOnFile("\nLa lista Open è vuota.\n");
@@ -292,97 +291,182 @@ public class ReachGoal {
 		return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
 	}
 	
+//	private List<IntArrayState> getCollisionStates(int cell, int[] neighborhood) {
+//		int numCols = grid[0].length;
+//		List<IntArrayState> collisionStates = new ArrayList<>();
+//		IntArrayState sameNextState = new IntArrayState (new int[] {cell, t});
+//		IntArrayState state = new IntArrayState(new int[2]);
+//		IntArrayState state1 = new IntArrayState(new int[2]);
+//		IntArrayState state2 = new IntArrayState(new int[2]);
+//		IntArrayState state3 = new IntArrayState(new int[2]);
+//		
+//		for(List<IntArrayState> agentPath: existingAgentsPaths) {
+//			for(int i=0; i < neighborhood.length; i++) {
+//				if(neighborhood[i] == 0) {
+//					if(agentPath.contains(sameNextState)) {
+//						collisionStates.add(sameNextState);
+//					}
+//					
+//				} else if(neighborhood[i] == -1) {
+//					state.setState(new int[] {cell-1, t});
+//					state1.setState(new int[] {cell-1, t-1});
+//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+//						collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == 1) {
+//					state.setState(new int[] {cell+1, t});
+//					state1.setState(new int[] {cell+1, t-1});
+//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+//						collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == -numCols) {
+//					state.setState(new int[] {cell-numCols, t});
+//					state1.setState(new int[] {cell-numCols, t-1});
+//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+//						collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == numCols) {
+//					state.setState(new int[] {cell+numCols, t});
+//					state1.setState(new int[] {cell+numCols, t-1});
+//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+//						collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == -(numCols+1)) {
+//					state.setState(new int[] {cell-(numCols+1), t});
+//					state1.setState(new int[] {cell-(numCols+1), t-1});
+//					state2.setState(new int[] {cell-1, t-1});
+//					state3.setState(new int[] {cell-numCols, t});
+//					if(agentPath.contains(state) || 
+//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
+//						(agentPath.contains(state2) && agentPath.contains(state3))) {
+//							collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == -(numCols-1)) {
+//					state.setState(new int[] {cell-(numCols-1), t});
+//					state1.setState(new int[] {cell-(numCols-1), t-1});
+//					state2.setState(new int[] {cell-numCols, t-1});
+//					state3.setState(new int[] {cell+1, t});
+//					
+//					if(agentPath.contains(state) || 
+//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
+//						(agentPath.contains(state2) && agentPath.contains(state3))) {
+//							collisionStates.add(state);
+//					}
+//					
+//				} else if(neighborhood[i] == (numCols-1)) {
+//					state.setState(new int[] {cell+(numCols-1), t});
+//					state1.setState(new int[] {cell+(numCols-1), t-1});
+//					state2.setState(new int[] {cell-1, t-1});
+//					state3.setState(new int[] {cell+numCols, t});
+//					if(agentPath.contains(state) || 
+//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
+//						(agentPath.contains(state2) && agentPath.contains(state3))) {
+//							collisionStates.add(state);
+//					}
+//					
+//				} else /*(numCols+1)*/ {
+//					state.setState(new int[] {cell+(numCols+1), t});
+//					state1.setState(new int[] {cell+(numCols+1), t-1});
+//					state2.setState(new int[] {cell+numCols, t-1});
+//					state3.setState(new int[] {cell+1, t});
+//					if(agentPath.contains(state) || 
+//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
+//						(agentPath.contains(state2) && agentPath.contains(state3))) {
+//							collisionStates.add(state);
+//					}
+//				}
+//			}
+//			
+//			if(t >= agentPath.get(0).getIstant()) {
+//				h.put(agentPath.get(0).getCell(), Double.MAX_VALUE);
+//			}
+//		}
+//		return collisionStates;
+//	}
+	
 	private List<IntArrayState> getCollisionStates(int cell, int[] neighborhood) {
 		int numCols = grid[0].length;
 		List<IntArrayState> collisionStates = new ArrayList<>();
 		IntArrayState sameNextState = new IntArrayState (new int[] {cell, t});
-		IntArrayState state = new IntArrayState(new int[2]);
-		IntArrayState state1 = new IntArrayState(new int[2]);
-		IntArrayState state2 = new IntArrayState(new int[2]);
-		IntArrayState state3 = new IntArrayState(new int[2]);
-		
+
 		for(List<IntArrayState> agentPath: existingAgentsPaths) {
 			for(int i=0; i < neighborhood.length; i++) {
 				if(neighborhood[i] == 0) {
 					if(agentPath.contains(sameNextState)) {
 						collisionStates.add(sameNextState);
 					}
-					
+
 				} else if(neighborhood[i] == -1) {
-					state.setState(new int[] {cell-1, t});
-					state1.setState(new int[] {cell-1, t-1});
-					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+					IntArrayState state = new IntArrayState (new int[] {cell-1, t});
+					if(agentPath.contains(state) || (agentPath.contains(new IntArrayState (new int[] {cell-1, t-1})) &&
+							agentPath.contains(sameNextState))) {
 						collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == 1) {
-					state.setState(new int[] {cell+1, t});
-					state1.setState(new int[] {cell+1, t-1});
-					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+					IntArrayState state = new IntArrayState (new int[] {cell+1, t});
+					if(agentPath.contains(state) || (agentPath.contains(new IntArrayState (new int[] {cell+1, t-1})) &&
+							agentPath.contains(sameNextState))) {
 						collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == -numCols) {
-					state.setState(new int[] {cell-numCols, t});
-					state1.setState(new int[] {cell-numCols, t-1});
-					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+					IntArrayState state = new IntArrayState (new int[] {cell-numCols, t});
+					if(agentPath.contains(state) || (agentPath.contains(new IntArrayState (new int[] {cell-numCols, t-1})) &&
+							agentPath.contains(sameNextState))) {
 						collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == numCols) {
-					state.setState(new int[] {cell+numCols, t});
-					state.setState(new int[] {cell+numCols, t-1});
-					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
+					IntArrayState state = new IntArrayState (new int[] {cell+numCols, t});
+					if(agentPath.contains(state) || (agentPath.contains(new IntArrayState (new int[] {cell+numCols, t-1})) &&
+							agentPath.contains(sameNextState))) {
 						collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == -(numCols+1)) {
-					state.setState(new int[] {cell-(numCols+1), t});
-					state1.setState(new int[] {cell-(numCols+1), t-1});
-					state2.setState(new int[] {cell-1, t-1});
-					state3.setState(new int[] {cell-numCols, t});
+					IntArrayState state = new IntArrayState (new int[] {cell-(numCols+1), t});
 					if(agentPath.contains(state) || 
-						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-						(agentPath.contains(state2) && agentPath.contains(state3))) {
+						(agentPath.contains(new IntArrayState (new int[] {cell-(numCols+1), t-1})) && agentPath.contains(sameNextState)) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-1, t-1})) && agentPath.contains(new IntArrayState (new int[] {cell-numCols, t}))) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-1, t})) && agentPath.contains(new IntArrayState (new int[] {cell-numCols, t-1})))) {
 							collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == -(numCols-1)) {
-					state.setState(new int[] {cell-(numCols-1), t});
-					state1.setState(new int[] {cell-(numCols-1), t-1});
-					state2.setState(new int[] {cell-numCols, t-1});
-					state3.setState(new int[] {cell+1, t});
-					
+					IntArrayState state = new IntArrayState (new int[] {cell-(numCols-1), t});
 					if(agentPath.contains(state) || 
-						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-						(agentPath.contains(state2) && agentPath.contains(state3))) {
+						(agentPath.contains(new IntArrayState (new int[] {cell-(numCols-1), t-1})) && agentPath.contains(sameNextState)) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-numCols, t-1})) && agentPath.contains(new IntArrayState (new int[] {cell+1, t}))) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-numCols, t})) && agentPath.contains(new IntArrayState (new int[] {cell+1, t-1})))) {
 							collisionStates.add(state);
 					}
-					
+
 				} else if(neighborhood[i] == (numCols-1)) {
-					state.setState(new int[] {cell+(numCols-1), t});
-					state1.setState(new int[] {cell+(numCols-1), t-1});
-					state2.setState(new int[] {cell-1, t-1});
-					state3.setState(new int[] {cell+numCols, t});
+					IntArrayState state = new IntArrayState (new int[] {cell+(numCols-1), t});
 					if(agentPath.contains(state) || 
-						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-						(agentPath.contains(state2) && agentPath.contains(state3))) {
+						(agentPath.contains(new IntArrayState (new int[] {cell+(numCols-1), t-1})) && agentPath.contains(sameNextState)) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-1, t-1})) && agentPath.contains(new IntArrayState (new int[] {cell+numCols, t}))) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell-1, t})) && agentPath.contains(new IntArrayState (new int[] {cell+numCols, t-1})))) {
 							collisionStates.add(state);
 					}
-					
+
 				} else /*(numCols+1)*/ {
-					state.setState(new int[] {cell+(numCols+1), t});
-					state1.setState(new int[] {cell+(numCols+1), t-1});
-					state2.setState(new int[] {cell+numCols, t-1});
-					state3.setState(new int[] {cell+1, t});
+					IntArrayState state = new IntArrayState (new int[] {cell+(numCols+1), t});
 					if(agentPath.contains(state) || 
-						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-						(agentPath.contains(state2) && agentPath.contains(state3))) {
+						(agentPath.contains(new IntArrayState (new int[] {cell+(numCols+1), t-1})) && agentPath.contains(sameNextState)) ||
+						(agentPath.contains(new IntArrayState (new int[] {cell+numCols, t-1})) && agentPath.contains(new IntArrayState (new int[] {cell+1, t}))) || 
+						(agentPath.contains(new IntArrayState (new int[] {cell+numCols, t})) && agentPath.contains(new IntArrayState (new int[] {cell+1, t-1})))) {
 							collisionStates.add(state);
 					}
 				}
 			}
-			
+
 			if(t >= agentPath.get(0).getIstant()) {
 				h.put(agentPath.get(0).getCell(), Double.MAX_VALUE);
 			}

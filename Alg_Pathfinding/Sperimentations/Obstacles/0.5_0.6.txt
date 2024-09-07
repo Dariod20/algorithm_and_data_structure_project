@@ -1,0 +1,23 @@
+Numero righe: 5000
+Numero colonne: 5000
+Celle attraversabili: 0.5 (12500000/25000000)
+Fattore agglomerazione: 0.6
+Max iterazioni: 12500000
+Stato iniziale: 1
+Stato goal: 15015000
+Numero agenti: 1
+
+Nessun agente preesistente
+
+Agente 1
+Suo stato iniziale: 1
+Suo stato goal: 15015000
+
+Dallo stato iniziale 1 è impossibile raggiungere il goal in 15015000
+
+Heap Size corrente (memoria occupata): 3535,798 megabytes su 4234,150 megabytes
+
+Memoria dell'Heap Size corrente libera: 1513,274 megabytes
+
+Tempo di esecuzione: 12134 millisecondi
+
