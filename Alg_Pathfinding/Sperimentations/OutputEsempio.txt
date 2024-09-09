@@ -4,9 +4,10 @@ Celle attraversabili: 0,80 (39/49)
 Max iterazioni: 39
 Stato iniziale: 8
 Stato goal: 22
-Numero agenti: 6
+Numero agenti preesistenti: 5
+Lunghezza minima del percorso degli agenti preesistenti: 1
 
-Percorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal decisi dll'utente
+Percorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal decisi dll'utente
 
 GRIGLIA 7 x 7
 

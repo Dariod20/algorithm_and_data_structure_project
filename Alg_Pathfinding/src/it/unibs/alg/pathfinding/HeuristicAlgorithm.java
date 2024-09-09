@@ -10,7 +10,6 @@ public class HeuristicAlgorithm {
 	
 	private int[][] grid;
 	private int goal;
-	
 	private Map<Integer, Double> h = new HashMap<>();
 	
 	public HeuristicAlgorithm(int[][] grid, int goal) {
@@ -18,9 +17,12 @@ public class HeuristicAlgorithm {
 		this.goal = goal;
 	}
 	
-	
+	/*
+	 * - Initialize h with zeros for each free cell
+	 * - Compute the heuristic of the relaxed path
+	 * - If for a cell the heuristic is still 0, it means that from that cell is impossible to reach the goal
+	 */
 	public void runHeuristic() {
-		
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
 				if(grid[i][j] != 0) {
@@ -28,9 +30,7 @@ public class HeuristicAlgorithm {
 				}
 			}
 		}
-		
-		computeHeuristic(goal);
-		
+		computeHeuristic();
 		for(Entry<Integer, Double> entry : h.entrySet()) {
 			if(entry.getValue() == 0.0) {
 				h.put(entry.getKey(), Double.MAX_VALUE);
@@ -39,10 +39,13 @@ public class HeuristicAlgorithm {
 		h.put(goal, 0.0);
 	}
 	
-	
-	private void computeHeuristic(int cell) {
+	/*
+	 * Calculate the best path from each cell in the grid to reach the goal, 
+	 * starting from the neighborhood of the goal
+	 */
+	private void computeHeuristic() {
 	    List<Integer> listNextCells = new ArrayList<>();
-	    listNextCells.add(cell);
+	    listNextCells.add(goal);
 
 	    while (!listNextCells.isEmpty()) {
 	        int currentCell = listNextCells.get(0);
@@ -77,7 +80,9 @@ public class HeuristicAlgorithm {
 	    }
 	}
 
-	
+	/*
+	 * Get the neighborhood of a cell, excluding the cell itself and checking its position
+	 */
 	private int[] getNeighborhood(int cell) {
 		int numRows = grid.length;
 		int numCols = grid[0].length;
@@ -118,7 +123,10 @@ public class HeuristicAlgorithm {
 		return new int[] {-1, 1, -(numCols+1), -numCols, -(numCols-1), (numCols-1), numCols, (numCols+1)};
 	}
 	
-	
+	/*
+	 * Get all costs of the neighborhood of a cell, excluding the cost of staying in cell itself 
+	 * and checking its position
+	 */
 	private double[] getNeighborhoodCost(int cell) {
 		int numRows = grid.length;
 		int numCols = grid[0].length;
@@ -156,7 +164,6 @@ public class HeuristicAlgorithm {
 			return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST};
 			
 		}
-		
 		return new double[] {Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
 	}
 	

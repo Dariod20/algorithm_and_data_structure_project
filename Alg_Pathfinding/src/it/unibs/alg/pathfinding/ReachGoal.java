@@ -31,6 +31,10 @@ public class ReachGoal {
 		this.max = max;
 	}
 	
+	/*
+	 * Execute the reachGoal algorithm for an agent with the appropriate checks,  
+	 * contemplating the possibility of a failure
+	 */
 	public void runReachGoal() {
 		executeFirstTwoSteps(init);
 		int chosenNextCell = extractStateWithMinCostFromOpen();
@@ -66,6 +70,9 @@ public class ReachGoal {
 		}
 	}
 	
+	/*
+	 * Compute the heuristic and add the states to Open for t=0 and t=1
+	 */
 	private void executeFirstTwoSteps(int initial) {
 		IntArrayState initState = new IntArrayState (new int[] {initial, 0});
 		
@@ -78,10 +85,13 @@ public class ReachGoal {
 		Closed.add(initState);
 	}
 	
+	/*
+	 * For each neighborhood state, with t=1, of the initial state, check if the agent can move towards it
+	 * without any problem, and, if so, then update the father-child tree P, the Open list and the costs g and f
+	 */
 	private void addFirstStatesToOpenAndComputeTheirCost(int initial, IntArrayState initState) {
 		int[] neighborhood = getNeighborhood(initial);
 		double[] neighborhoodCost = getNeighborhoodCost(initial);
-		
 		List<IntArrayState> collisionStates = getCollisionStates(initial, neighborhood);
 		
 		for(int i=0; i < neighborhood.length; i++) {
@@ -109,10 +119,13 @@ public class ReachGoal {
 		}
 	}
 	
+	/*
+	 * For each neighborhood state of the current state, do all the necessary checks to verify if the neighborhood 
+	 * state could be the next state or not. During this checks the P, Open, g and f data could be updated.
+	 */
 	private void addStatesToOpenAndComputeTheirCost(int cell) {
 		int[] neighborhood = getNeighborhood(cell);
 		double[] neighborhoodCost = getNeighborhoodCost(cell);
-		
 		List<IntArrayState> collisionStates = getCollisionStates(cell, neighborhood);
 		
 		for(int i=0; i < neighborhood.length; i++) {
@@ -132,10 +145,6 @@ public class ReachGoal {
 				IntArrayState nextPossibleState = new IntArrayState (new int[] {nextPossibleCell, t});
 				IntArrayState parentState = new IntArrayState (new int[] {cell, t-1});
 				
-				/*
-				 * Insert the best father of a state, checking if there is already inserted one with
-				 * an heuristic worse then the current one
-				 */
 				if(P.containsKey(nextPossibleState)) {
 					int insertedParentCell = P.get(nextPossibleState).getCell();
 					int typeOfCost = Math.abs(insertedParentCell - nextPossibleCell);
@@ -177,6 +186,9 @@ public class ReachGoal {
 		}
 	}
 	
+	/*
+	 * Get the neighborhood of a cell, checking the position of the cell itself 
+	 */
 	private int[] getNeighborhood(int cell) {
 		int numRows = grid.length;
 		int numCols = grid[0].length;
@@ -217,6 +229,9 @@ public class ReachGoal {
 		return new int[] {0, -1, 1, -(numCols+1), -numCols, -(numCols-1), (numCols-1), numCols, (numCols+1)};
 	}
 	
+	/*
+	 * Get all costs of the neighborhood of a cell, checking the position of the cell itself 
+	 */
 	private double[] getNeighborhoodCost(int cell) {
 		int numRows = grid.length;
 		int numCols = grid[0].length;
@@ -258,7 +273,9 @@ public class ReachGoal {
 		return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
 	}
 	
-	
+	/*
+	 * Get the states forbidden because the path of the existing agents
+	 */
 	private List<IntArrayState> getCollisionStates(int cell, int[] neighborhood) {
 		int numCols = grid[0].length;
 		List<IntArrayState> collisionStates = new ArrayList<>();
@@ -344,6 +361,10 @@ public class ReachGoal {
 		return collisionStates;
 	}
 	
+	/*
+	 * - Return the cell of the state with minimum cost in Open
+	 * - Remove this state from Open, add it to Closed and increment t
+	 */
 	private int extractStateWithMinCostFromOpen() {
 		IntArrayState minCostState = new IntArrayState(new int[2]);
 	    double minValue = Double.MAX_VALUE;
@@ -366,7 +387,9 @@ public class ReachGoal {
 		return minCostState.getCell();
 	}
 	
-	
+	/*
+	 * Return the entry agent path with minimum cost to reach the goal from init
+	 */
 	public List<IntArrayState> reconstructPath() {
 		List<IntArrayState> path = new ArrayList<>();
 		IntArrayState state = new IntArrayState (new int[] {goal, t});

@@ -5,9 +5,7 @@ Fattore agglomerazione: 0.2
 Max iterazioni: 15000000
 Stato iniziale: 1
 Stato goal: 15015000
-Numero agenti: 1
-
-Nessun agente preesistente
+Numero agenti preesistenti: 0
 
 Agente 1
 Suo stato iniziale: 1

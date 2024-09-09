@@ -17,8 +17,8 @@ public class GridGenerator {
 	/*
 	 * n. rows (height) x n.columns (length)
 	 */
-	public GridGenerator(int h, int l, double pct_obst, double aggl_fact) {
-		grid = new int[h][l];
+	public GridGenerator(int height, int length, double pct_obst, double aggl_fact) {
+		grid = new int[height][length];
 		this.pct_obst = pct_obst;
 		this.aggl_fact = aggl_fact;
 		
@@ -42,7 +42,11 @@ public class GridGenerator {
 		}
 	}
 	
-	public void checkEntryInitGoalNotObstacoles(int entryInit, int entryGoal) {
+	/*
+	 * If the entry init or goal is an obstacle, then assign it the init or goal value
+	 * and insert a new random obstacle
+	 */
+	public void checkEntryInitGoalNotObstacles(int entryInit, int entryGoal) {
 		int numCols = grid[0].length;
 		int rowIndex = 0;
 		int colIndex = 0;
@@ -80,6 +84,9 @@ public class GridGenerator {
 		existingAgentsGoal.add(entryGoal);
 	}
 	
+	/*
+	 * Insert obstacles in the positions decided by the user in the 'Input.txt' file
+	 */
 	public int insertManuallyObstacles(List<String> inputs, int start) {
 		int i = start;
 		int numCols = grid[0].length;
@@ -101,10 +108,9 @@ public class GridGenerator {
 		return i++;
 	}
 	
-	
 	/*
-	 * Insert the obstacles in grid based on their percentage and based on the fact
-	 * if the probability of agglomerates is high or not
+	 * Insert the required number of obstacles in the grid in a random way.
+	 * Group them based on the agglomeration factor percentage
 	 */
 	public void insertRandomObstacles() {
 		int numObst = (int) ((int) (grid.length * grid[0].length) * pct_obst);
@@ -141,6 +147,9 @@ public class GridGenerator {
 		}
 	}
 	
+	/*
+	 * Get randomly the position of an obstacle
+	 */
 	private int[] getRandomObstPos() {
 		int[] obstPos = new int[2];
 		int i = 0;
@@ -158,8 +167,7 @@ public class GridGenerator {
 	}
 	
 	/*
-	 * Insert a new obstacle based on the agglomeration factor and to make sure to not
-	 * overlap the new obstacles with an existing one
+	 * Insert a new obstacle near to an existing one in horizontal or vertical direction
 	 */
 	private int[] getNewObstPos(ArrayList<int[]> existingObstPos) {
 		int count = 0;
@@ -189,6 +197,9 @@ public class GridGenerator {
 		return null;
 	}
 	
+	/*
+	 * Get randomly the cardinal number that identify the starting cell of an agent
+	 */
 	public int getRandomInit() {
 		int i = (int) (grid.length * Math.random());
 		int j = (int) (grid[0].length * Math.random());
@@ -203,6 +214,9 @@ public class GridGenerator {
 		return grid[i][j];
 	}
 	
+	/*
+	 * Get randomly the cardinal number that identify the goal cell of an agent
+	 */
 	public int getRandomGoal(int minPathLength) {
 		int i = (int) (grid.length * Math.random());
 		int j = (int) (grid[0].length * Math.random());
@@ -215,8 +229,6 @@ public class GridGenerator {
 		
 		existingAgentsGoal.add(grid[i][j]);
 		return grid[i][j];
-		}
-	
-	
+	}
 	
 }

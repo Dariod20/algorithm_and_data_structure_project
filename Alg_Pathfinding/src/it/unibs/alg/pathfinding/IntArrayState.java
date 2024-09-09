@@ -10,6 +10,10 @@ public class IntArrayState {
         this.state = state;
     }
 
+    /*
+     * Override array int equals method, making two int arrays equal 
+     * when they contain the same elements
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -18,13 +22,12 @@ public class IntArrayState {
         return Arrays.equals(state, that.state);
     }
 
+    /*
+     * Override array int hashCode method
+     */
     @Override
     public int hashCode() {
         return Arrays.hashCode(state);
-    }
-    
-    public void setState(int[] newState) {
-    	state = newState;
     }
     
     public int getCell() {

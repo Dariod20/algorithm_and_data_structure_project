@@ -18,6 +18,9 @@ public class Utility {
 	public static final String INPUT_FILE = "Input.txt";
 	public static final String OUTPUT_FILE = "Output.txt";
 
+	/*
+	 * Read the 'Input.txt' lines and return the list of the inputs
+	 */
 	public static List<String> readInputs() {
 		BufferedReader input = null;
 		List<String> inputs = new ArrayList<>();

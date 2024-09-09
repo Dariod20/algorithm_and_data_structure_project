@@ -8,7 +8,7 @@ Stato goal: 8060
 Numero agenti preesistenti: 300
 Lunghezza minima del percorso degli agenti preesistenti: 20
 
-Percorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali
+Percorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal casuali
 
 Agente 1
 Suo stato iniziale: 5289

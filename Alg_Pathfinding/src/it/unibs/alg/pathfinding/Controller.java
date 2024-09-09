@@ -41,14 +41,16 @@ public class Controller {
 		isGridManual = Boolean.parseBoolean(inputs.get(9));
 	}
 	
-	
+	/*
+	 * Method that execute all the process
+	 */
 	public void startAlgorithm() {
 		gridGenerator = new GridGenerator(numRows, numCols, pctObst, agglFact);
 		if(isGridManual) {
 			agentsStart = gridGenerator.insertManuallyObstacles(inputs, 10);
 		} else {
 			gridGenerator.insertRandomObstacles();
-			gridGenerator.checkEntryInitGoalNotObstacoles(entryInit, entryGoal);
+			gridGenerator.checkEntryInitGoalNotObstacles(entryInit, entryGoal);
 		}
 		int[][] grid = gridGenerator.getGrid();
 		if(Utility.fileExists()) {
@@ -63,7 +65,9 @@ public class Controller {
 		printMemory();
 	}
 	
-
+	/*
+	 * Write on file 'Output.txt' the instance information
+	 */
 	private void writeFirstOutputs(boolean isGridManual, int agentsStart) {
 		int dim = numRows*numCols;
 		Utility.writeOnFile("Numero righe: " + numRows + "\n");
@@ -79,15 +83,20 @@ public class Controller {
 		Utility.writeOnFile("Stato iniziale: " + entryInit + "\n");
 		Utility.writeOnFile("Stato goal: " + entryGoal + "\n");
 		Utility.writeOnFile("Numero agenti preesistenti: " + numAgents + "\n");
-		Utility.writeOnFile("Lunghezza minima del percorso degli agenti preesistenti: " + minLengthAgentsPath + "\n");
-		if(isGridManual) {
-			Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal decisi dll'utente\n");
-		} else {
-			Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali\n");
+		if(numAgents > 0) {
+			Utility.writeOnFile("Lunghezza minima del percorso degli agenti preesistenti: " + minLengthAgentsPath + "\n");
+			if(isGridManual) {
+				Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal decisi dll'utente\n");
+			} else {
+				Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal casuali\n");
+			}
 		}
 	}
 	
-	
+	/*
+	 * Print the values contained in the grid, substituting the obstacle
+	 * value 0 with an 'X'
+	 */
 	private void printGrid(int[][] grid) {
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
@@ -108,7 +117,10 @@ public class Controller {
 		Utility.writeOnFile("\n");
 	}
 	
-	
+	/*
+	 * For each agent: get its init and goal, call reachGoal algorithm and, if it is successful,
+	 * print the agent path on file and add it to the existing agents path list
+	 */
 	private void findPath(int[][] grid) {
 		long start = 0;
 		int init = -1;
@@ -168,12 +180,14 @@ public class Controller {
 		Utility.writeOnFile("\nTempo speso per trovare percorso del nuovo agente: " + (end-start) + " millisecondi\n\n");
 	}
 
-
+	/*
+	 * Print the agents movement simulation on the grid
+	 */
 	private void printAgentsSimulation(int[][] grid) {
 		if(grid.length <= MAX_DIM_TO_PRINT_GRID && numAgents <= MAX_AGENTS_TO_PRINT_SIMULATION) {
 			Utility.writeOnFile("Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.\n\n");
 			
-			int maxNumAgents = getMaxNumAgentsOnTheSameCell(grid);
+			int maxNumAgents = getMaxNumAgentsOnACell(grid);
 			
 			for(int i=0; i < grid.length; i++) {
 				for(int j=0; j < grid[0].length; j++) {
@@ -220,7 +234,10 @@ public class Controller {
 		}
 	}
 	
-	private int getMaxNumAgentsOnTheSameCell(int[][] grid) {
+	/*
+	 * Get the maximum number of agents that cross a cell
+	 */
+	private int getMaxNumAgentsOnACell(int[][] grid) {
 		int maxNumAgents = 0;
 		for(int i=0; i < grid.length; i++) {
 			for(int j=0; j < grid[0].length; j++) {
@@ -242,16 +259,16 @@ public class Controller {
 		return maxNumAgents;
 	}
 	
+	/*
+	 * Print information about:
+	 * - the total heap size (allocated memory)
+	 * - the maximum heap size (if set by the JVM)
+	 * - the free memory within the heap
+	 */
 	private void printMemory() {
 		Runtime runtime = Runtime.getRuntime();
-
-        // Get the total heap size (allocated memory)
         long heapSize = runtime.totalMemory();
-
-        // Get the maximum heap size (if set by the JVM)
         long maxHeapSize = runtime.maxMemory();
-
-        // Get the free memory within the heap
         long freeMemory = runtime.freeMemory();
         
         Utility.writeOnFile("Heap Size corrente (memoria occupata): " + String.format("%.3f", ((double)heapSize/BYTE_ORDER))
