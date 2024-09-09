@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Controller {
 	
-	private static final int MAX_AGENTS_TO_PRINT_SIMULATION = 10;
+	private static final int MAX_AGENTS_TO_PRINT_SIMULATION = 8;
 	private static final int MAX_DIM_TO_PRINT_GRID = 30;
 	private static final int MAX_PATH_STATES_ON_THE_SAME_LINE = 500;
 	private static final int BYTE_ORDER = 1000000;
@@ -78,16 +78,12 @@ public class Controller {
 		Utility.writeOnFile("Max iterazioni: " + max + "\n");
 		Utility.writeOnFile("Stato iniziale: " + entryInit + "\n");
 		Utility.writeOnFile("Stato goal: " + entryGoal + "\n");
-		Utility.writeOnFile("Numero agenti: " + numAgents + "\n");
-		Utility.writeOnFile("Lunghezza minima del percorso degli agenti: " + minLengthAgentsPath + "\n");
-		if(numAgents > 1) {
-			if(isGridManual) {
-				Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal decisi dll'utente\n");
-			} else {
-				Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali\n");
-			}
+		Utility.writeOnFile("Numero agenti preesistenti: " + numAgents + "\n");
+		Utility.writeOnFile("Lunghezza minima del percorso degli agenti preesistenti: " + minLengthAgentsPath + "\n");
+		if(isGridManual) {
+			Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal decisi dll'utente\n");
 		} else {
-			Utility.writeOnFile("\nNessun agente preesistente\n");
+			Utility.writeOnFile("\nPercorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali\n");
 		}
 	}
 	
@@ -118,7 +114,7 @@ public class Controller {
 		int init = -1;
 		int goal = -1;
 		int agentIndex = agentsStart;
-		for(int n = 1; n <= numAgents; n++) {
+		for(int n = 0; n < (numAgents+1); n++) {
 			if(n == numAgents) {
 				start = System.currentTimeMillis();
 				init = entryInit;
@@ -133,7 +129,7 @@ public class Controller {
 				}
 			}
 			
-			Utility.writeOnFile("\nAgente " + n + "\n");
+			Utility.writeOnFile("\nAgente " + (n+1) + "\n");
 			Utility.writeOnFile("Suo stato iniziale: " + init + "\n");
 			Utility.writeOnFile("Suo stato goal: " + goal + "\n\n");
 			
@@ -157,7 +153,7 @@ public class Controller {
 						Utility.writeOnFile("\n");
 					}
 				}
-				Utility.writeOnFile("\nNumero mosse wait: " + numWaitMoves);
+				Utility.writeOnFile("\nNumero mosse wait: " + numWaitMoves + "\n\n");
 				
 			} else {
 				List<IntArrayState> onlyInitAndGoal = new ArrayList<>();
@@ -169,13 +165,13 @@ public class Controller {
 			printAgentsSimulation(grid);
 		}
 		long end = System.currentTimeMillis();
-		Utility.writeOnFile("Tempo speso per trovare percorso del nuovo agente: " + (end-start) + " millisecondi\n\n");
+		Utility.writeOnFile("\nTempo speso per trovare percorso del nuovo agente: " + (end-start) + " millisecondi\n\n");
 	}
 
 
 	private void printAgentsSimulation(int[][] grid) {
-		if(grid.length <= MAX_DIM_TO_PRINT_GRID && numAgents < MAX_AGENTS_TO_PRINT_SIMULATION) {
-			Utility.writeOnFile("\n\nSimulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.\n\n");
+		if(grid.length <= MAX_DIM_TO_PRINT_GRID && numAgents <= MAX_AGENTS_TO_PRINT_SIMULATION) {
+			Utility.writeOnFile("Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.\n\n");
 			
 			int maxNumAgents = getMaxNumAgentsOnTheSameCell(grid);
 			

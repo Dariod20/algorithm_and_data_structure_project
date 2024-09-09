@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class ReachGoal {
 	
@@ -15,7 +14,6 @@ public class ReachGoal {
 	private int max;
 	
 	private int t = 0;
-	private int step = 0;
 	private boolean successful = true;
 	private List<IntArrayState> Open = new ArrayList<>();
 	private List<IntArrayState> Closed = new ArrayList<>();
@@ -40,26 +38,15 @@ public class ReachGoal {
 		do {
 			if(t <= max) {
 				if(chosenNextCell == 0) {
-					Utility.writeOnFile("Dallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal);
+					Utility.writeOnFile("Dallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal + "\n");
 					successful = false;
 					break;
 				}
 				if(chosenNextCell != goal) {
-					step++;
-//					System.out.println("\nOpen in step " + step++);
 					addStatesToOpenAndComputeTheirCost(chosenNextCell);
-//					for(IntArrayState state: Open) {
-//						double cost = f.get(new IntArrayState (new int[] {state.getCell(), state.getIstant()}));
-//						System.out.printf("(%d, %d) -> %.2f\n", state.getCell(), state.getIstant(), cost);
-//					}
 					chosenNextCell = extractStateWithMinCostFromOpen();
 				} else {
 					t--;
-					
-//					System.out.print("\nClosed list: ");
-//					for(IntArrayState state: Closed) {
-//						System.out.print("(" + state.getCell() + ", " + state.getIstant() + "), ");
-//					}
 					Utility.writeOnFile("Numero di stati espansi: " + Closed.size()/*step*/);
 					Utility.writeOnFile("\nNumero totale di stati inseriti nella Open: " + (P.size()+1));
 					Utility.writeOnFile("\nLunghezza del percorso: " + t);
@@ -77,7 +64,6 @@ public class ReachGoal {
 			Utility.writeOnFile("\nLa lista Open è vuota.\n");
 			successful = false;
 		}
-		
 	}
 	
 	private void executeFirstTwoSteps(int initial) {
@@ -87,17 +73,7 @@ public class ReachGoal {
 		heuristic.runHeuristic();
 		h = heuristic.getH();
 		
-//		for(Entry<Integer, Double> entry : h.entrySet()) {
-//            System.out.println("State: " + entry.getKey() + ", Cost: " + entry.getValue());
-//		}
-		
-//		f.put(Open.get(0), h.get(initial));
-//		System.out.println("Open in step " + step++);
-//		System.out.printf("(%d, %d) -> %.2f\n", initial, t, h.get(initial));
-		
 		t++;
-		step++;
-//		System.out.println("\nOpen in step " + step++);
 		addFirstStatesToOpenAndComputeTheirCost(initial, initState);
 		Closed.add(initState);
 	}
@@ -128,12 +104,7 @@ public class ReachGoal {
 					g.put(nextPossibleState, neighborhoodCost[i]);
 					double cost = neighborhoodCost[i] + h.get(nextPossibleCell);
 					f.put(nextPossibleState, cost);
-//					System.out.printf("(%d, %d) -> %.2f\n", nextPossibleCell, t, cost);
 				} 
-//				else {
-//					System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
-//							+ "un altro agente\n", nextPossibleCell, t);
-//				}
 			}
 		}
 	}
@@ -202,10 +173,6 @@ public class ReachGoal {
 						}
 					}
 				} 
-//				else {
-//					System.out.printf("\nStato (%d, %d) non aggiunto a Open perchè in conflitto con "
-//							+ "un altro agente\n", nextPossibleCell, t);
-//				}
 			}
 		}
 	}
@@ -291,103 +258,6 @@ public class ReachGoal {
 		return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
 	}
 	
-//	private List<IntArrayState> getCollisionStates(int cell, int[] neighborhood) {
-//		int numCols = grid[0].length;
-//		List<IntArrayState> collisionStates = new ArrayList<>();
-//		IntArrayState sameNextState = new IntArrayState (new int[] {cell, t});
-//		IntArrayState state = new IntArrayState(new int[2]);
-//		IntArrayState state1 = new IntArrayState(new int[2]);
-//		IntArrayState state2 = new IntArrayState(new int[2]);
-//		IntArrayState state3 = new IntArrayState(new int[2]);
-//		
-//		for(List<IntArrayState> agentPath: existingAgentsPaths) {
-//			for(int i=0; i < neighborhood.length; i++) {
-//				if(neighborhood[i] == 0) {
-//					if(agentPath.contains(sameNextState)) {
-//						collisionStates.add(sameNextState);
-//					}
-//					
-//				} else if(neighborhood[i] == -1) {
-//					state.setState(new int[] {cell-1, t});
-//					state1.setState(new int[] {cell-1, t-1});
-//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
-//						collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == 1) {
-//					state.setState(new int[] {cell+1, t});
-//					state1.setState(new int[] {cell+1, t-1});
-//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
-//						collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == -numCols) {
-//					state.setState(new int[] {cell-numCols, t});
-//					state1.setState(new int[] {cell-numCols, t-1});
-//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
-//						collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == numCols) {
-//					state.setState(new int[] {cell+numCols, t});
-//					state1.setState(new int[] {cell+numCols, t-1});
-//					if(agentPath.contains(state) || (agentPath.contains(state1) && agentPath.contains(sameNextState))) {
-//						collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == -(numCols+1)) {
-//					state.setState(new int[] {cell-(numCols+1), t});
-//					state1.setState(new int[] {cell-(numCols+1), t-1});
-//					state2.setState(new int[] {cell-1, t-1});
-//					state3.setState(new int[] {cell-numCols, t});
-//					if(agentPath.contains(state) || 
-//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-//						(agentPath.contains(state2) && agentPath.contains(state3))) {
-//							collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == -(numCols-1)) {
-//					state.setState(new int[] {cell-(numCols-1), t});
-//					state1.setState(new int[] {cell-(numCols-1), t-1});
-//					state2.setState(new int[] {cell-numCols, t-1});
-//					state3.setState(new int[] {cell+1, t});
-//					
-//					if(agentPath.contains(state) || 
-//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-//						(agentPath.contains(state2) && agentPath.contains(state3))) {
-//							collisionStates.add(state);
-//					}
-//					
-//				} else if(neighborhood[i] == (numCols-1)) {
-//					state.setState(new int[] {cell+(numCols-1), t});
-//					state1.setState(new int[] {cell+(numCols-1), t-1});
-//					state2.setState(new int[] {cell-1, t-1});
-//					state3.setState(new int[] {cell+numCols, t});
-//					if(agentPath.contains(state) || 
-//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-//						(agentPath.contains(state2) && agentPath.contains(state3))) {
-//							collisionStates.add(state);
-//					}
-//					
-//				} else /*(numCols+1)*/ {
-//					state.setState(new int[] {cell+(numCols+1), t});
-//					state1.setState(new int[] {cell+(numCols+1), t-1});
-//					state2.setState(new int[] {cell+numCols, t-1});
-//					state3.setState(new int[] {cell+1, t});
-//					if(agentPath.contains(state) || 
-//						(agentPath.contains(state1) && agentPath.contains(sameNextState)) ||
-//						(agentPath.contains(state2) && agentPath.contains(state3))) {
-//							collisionStates.add(state);
-//					}
-//				}
-//			}
-//			
-//			if(t >= agentPath.get(0).getIstant()) {
-//				h.put(agentPath.get(0).getCell(), Double.MAX_VALUE);
-//			}
-//		}
-//		return collisionStates;
-//	}
 	
 	private List<IntArrayState> getCollisionStates(int cell, int[] neighborhood) {
 		int numCols = grid[0].length;
@@ -489,13 +359,13 @@ public class ReachGoal {
 			return 0;
 		}
 		
-//		System.out.println("Min Cost State in Open: (" + minCostState.getCell() + ", " + minCostState.getIstant() + ")");
 		t = minCostState.getIstant() + 1;
 		Open.remove(minCostState);
 		Closed.add(minCostState);
 		
 		return minCostState.getCell();
 	}
+	
 	
 	public List<IntArrayState> reconstructPath() {
 		List<IntArrayState> path = new ArrayList<>();

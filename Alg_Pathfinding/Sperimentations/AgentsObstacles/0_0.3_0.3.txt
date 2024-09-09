@@ -1,0 +1,35 @@
+Numero righe: 100
+Numero colonne: 100
+Celle attraversabili: 0,70 (7000/10000)
+Fattore agglomerazione: 0.3
+Max iterazioni: 10000
+Stato iniziale: 930
+Stato goal: 8060
+Numero agenti preesistenti: 0
+Lunghezza minima del percorso degli agenti preesistenti: 1
+
+Percorsi agenti preesistenti calcolati con chiamata ricorsiva di ReachGoal() con Init e Goal casuali
+
+Agente 1
+Suo stato iniziale: 930
+Suo stato goal: 8060
+
+Numero di stati espansi: 100
+Numero totale di stati inseriti nella Open: 544
+Lunghezza del percorso: 71
+Costo del percorso: 87,57
+
+Path: 
+(930, 0) -> (1031, 1) -> (1131, 2) -> (1231, 3) -> (1331, 4) -> (1431, 5) -> (1532, 6) -> (1631, 7) -> (1731, 8) -> (1830, 9) -> (1930, 10) -> (2030, 11) -> (2130, 12) -> (2230, 13) -> (2331, 14) -> (2431, 15) -> (2531, 16) -> (2632, 17) -> (2732, 18) -> (2833, 19) -> (2934, 20) -> (3035, 21) -> (3135, 22) -> (3234, 23) -> (3335, 24) -> (3435, 25) -> (3536, 26) -> (3637, 27) -> (3738, 28) -> (3839, 29) -> (3940, 30) -> (4041, 31) -> (4142, 32) -> (4243, 33) -> (4344, 34) -> (4445, 35) -> (4545, 36) -> (4646, 37) -> (4746, 38) -> (4847, 39) -> (4947, 40) -> (5048, 41) -> (5149, 42) -> (5249, 43) -> (5348, 44) -> (5448, 45) -> (5549, 46) -> (5648, 47) -> (5748, 48) -> (5848, 49) -> (5948, 50) -> (6048, 51) -> (6149, 52) -> (6249, 53) -> (6350, 54) -> (6450, 55) -> (6551, 56) -> (6652, 57) -> (6752, 58) -> (6852, 59) -> (6952, 60) -> (7052, 61) -> (7153, 62) -> (7254, 63) -> (7355, 64) -> (7456, 65) -> (7556, 66) -> (7657, 67) -> (7758, 68) -> (7859, 69) -> (7960, 70) -> (8060, 71)
+
+Numero mosse wait: 0
+
+
+Tempo speso per trovare percorso del nuovo agente: 52 millisecondi
+
+Heap Size corrente (memoria occupata): 266,338 megabytes su 4234,150 megabytes
+
+Memoria dell'Heap Size corrente libera: 257,464 megabytes
+
+Tempo di esecuzione: 85 millisecondi
+

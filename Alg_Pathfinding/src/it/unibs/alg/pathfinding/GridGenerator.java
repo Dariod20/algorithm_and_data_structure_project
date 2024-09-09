@@ -5,7 +5,7 @@ import java.util.List;
 
 public class GridGenerator {
 	
-	private static final int AGGL_FACTOR_LIMIT = 10;
+	private static final int BREAK_LIMIT = 10;
 	private int[][] grid;
 	private double pct_obst;
 	private double aggl_fact;
@@ -185,7 +185,7 @@ public class GridGenerator {
 				return obst;
 			}
 			count++;
-		} while(count < AGGL_FACTOR_LIMIT);
+		} while(count < BREAK_LIMIT);
 		return null;
 	}
 	
@@ -216,5 +216,7 @@ public class GridGenerator {
 		existingAgentsGoal.add(grid[i][j]);
 		return grid[i][j];
 		}
+	
+	
 	
 }

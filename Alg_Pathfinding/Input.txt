@@ -1,11 +1,11 @@
 numero_righe 100
 numero_colonne 100
-percentuale_ostacoli 0.2
-pct_fatt_aggl_ostacoli 0.3
-max_iterazioni 8000
-num_agenti 20
-stato_iniziale 630
-stato_finale 7550
+percentuale_ostacoli 0.4
+pct_fatt_aggl_ostacoli 0.6
+max_iterazioni 10000
+num_agenti 100
+stato_iniziale 930
+stato_finale 8060
 min_percorso_agenti 1
 griglia_manuale false
 agenti_manuali false
