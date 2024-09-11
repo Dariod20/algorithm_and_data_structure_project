@@ -1,220 +1,185 @@
-Numero righe: 7
-Numero colonne: 7
-Celle attraversabili: 0,78 (38/49)
-Max iterazioni: 39
-Stato iniziale: 8
-Stato goal: 22
-Numero agenti preesistenti: 5
+Numero righe: 6
+Numero colonne: 6
+Celle attraversabili: 0,75 (27/36)
+Fattore agglomerazione: 0.3
+Max iterazioni: 36
+Stato iniziale: 1
+Stato goal: 36
+Numero agenti preesistenti: 4
 Lunghezza minima del percorso degli agenti preesistenti: 1
 
-Percorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal decisi dll'utente
+Percorsi agenti preesistenti calcolati con chiamata iterativa di ReachGoal() con Init e Goal casuali
 
-GRIGLIA 7 x 7
+GRIGLIA 6 x 6
 
-1    2    3    4    5    X    7    
-8    9    10   11   12   X    14   
-X    16   X    X    19   X    21   
-22   23   24   25   26   X    28   
-29   30   31   32   33   X    35   
-36   37   38   39   40   X    42   
-43   44   45   46   47   X    49   
+1    2    X    X    X    6    
+7    8    X    10   11   X    
+13   14   15   16   17   18   
+19   20   21   22   23   24   
+X    X    27   28   29   30   
+31   X    X    34   35   36   
 
 
 Agente 1
-Suo stato iniziale: 12
-Suo stato goal: 10
+Suo stato iniziale: 36
+Suo stato goal: 18
 
-Numero di stati espansi: 3
-Numero totale di stati inseriti nella Open: 13
-Lunghezza del percorso: 2
-Costo del percorso: 2,00
+Numero di stati espansi: 4
+Numero totale di stati inseriti nella Open: 17
+Lunghezza del percorso: 3
+Costo del percorso: 3,00
 
 Path: 
-(12, 0) -> (11, 1) -> (10, 2)
+(36, 0) -> (30, 1) -> (24, 2) -> (18, 3)
 
 Numero mosse wait: 0
 
 Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
 
-  |   |   |   |   | X |   | 
-----------------------------
-  |   | 1 | 1 | 1 | X |   | 
-----------------------------
-X |   | X | X |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
+  |   | X | X | X |   | 
+------------------------
+  |   | X |   |   | X | 
+------------------------
+  |   |   |   |   | 1 | 
+------------------------
+  |   |   |   |   | 1 | 
+------------------------
+X | X |   |   |   | 1 | 
+------------------------
+  | X | X |   |   | 1 | 
+------------------------
 
 
 
 Agente 2
-Suo stato iniziale: 24
-Suo stato goal: 4
+Suo stato iniziale: 2
+Suo stato goal: 19
 
-Numero di stati espansi: 11
-Numero totale di stati inseriti nella Open: 46
-Lunghezza del percorso: 4
-Costo del percorso: 4,83
+Numero di stati espansi: 6
+Numero totale di stati inseriti nella Open: 20
+Lunghezza del percorso: 3
+Costo del percorso: 3,41
 
 Path: 
-(24, 0) -> (16, 1) -> (9, 2) -> (3, 3) -> (4, 4)
+(2, 0) -> (7, 1) -> (13, 2) -> (19, 3)
 
 Numero mosse wait: 0
 
 Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
 
-  |   | 2 | 2 |   | X |   | 
-----------------------------
-  | 2 | 1 | 1 | 1 | X |   | 
-----------------------------
-X | 2 | X | X |   | X |   | 
-----------------------------
-  |   | 2 |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
+  | 2 | X | X | X |   | 
+------------------------
+2 |   | X |   |   | X | 
+------------------------
+2 |   |   |   |   | 1 | 
+------------------------
+2 |   |   |   |   | 1 | 
+------------------------
+X | X |   |   |   | 1 | 
+------------------------
+  | X | X |   |   | 1 | 
+------------------------
 
 
 
 Agente 3
-Suo stato iniziale: 47
-Suo stato goal: 35
+Suo stato iniziale: 15
+Suo stato goal: 22
 
-Dallo stato iniziale 47 è impossibile raggiungere il goal in 35
+Numero di stati espansi: 2
+Numero totale di stati inseriti nella Open: 9
+Lunghezza del percorso: 1
+Costo del percorso: 1,41
+
+Path: 
+(15, 0) -> (22, 1)
+
+Numero mosse wait: 0
 
 Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
 
-  |   | 2 | 2 |   | X |   | 
-----------------------------
-  | 2 | 1 | 1 | 1 | X |   | 
-----------------------------
-X | 2 | X | X |   | X |   | 
-----------------------------
-  |   | 2 |   |   | X |   | 
-----------------------------
-  |   |   |   |   | X | 3 | 
-----------------------------
-  |   |   |   |   | X |   | 
-----------------------------
-  |   |   |   | 3 | X |   | 
-----------------------------
+  | 2 | X | X | X |   | 
+------------------------
+2 |   | X |   |   | X | 
+------------------------
+2 |   | 3 |   |   | 1 | 
+------------------------
+2 |   |   | 3 |   | 1 | 
+------------------------
+X | X |   |   |   | 1 | 
+------------------------
+  | X | X |   |   | 1 | 
+------------------------
 
 
 
 Agente 4
-Suo stato iniziale: 45
-Suo stato goal: 29
+Suo stato iniziale: 8
+Suo stato goal: 28
 
-Numero di stati espansi: 3
-Numero totale di stati inseriti nella Open: 16
-Lunghezza del percorso: 2
-Costo del percorso: 2,83
+Numero di stati espansi: 4
+Numero totale di stati inseriti nella Open: 22
+Lunghezza del percorso: 3
+Costo del percorso: 3,83
 
 Path: 
-(45, 0) -> (37, 1) -> (29, 2)
+(8, 0) -> (15, 1) -> (21, 2) -> (28, 3)
 
 Numero mosse wait: 0
 
 Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
 
-  |   | 2 | 2 |   | X |   | 
-----------------------------
-  | 2 | 1 | 1 | 1 | X |   | 
-----------------------------
-X | 2 | X | X |   | X |   | 
-----------------------------
-  |   | 2 |   |   | X |   | 
-----------------------------
-4 |   |   |   |   | X | 3 | 
-----------------------------
-  | 4 |   |   |   | X |   | 
-----------------------------
-  |   | 4 |   | 3 | X |   | 
-----------------------------
+   | 2  | XX | XX | XX |    | 
+------------------------------
+2  | 4  | XX |    |    | XX | 
+------------------------------
+2  |    | 34 |    |    | 1  | 
+------------------------------
+2  |    | 4  | 3  |    | 1  | 
+------------------------------
+XX | XX |    | 4  |    | 1  | 
+------------------------------
+   | XX | XX |    |    | 1  | 
+------------------------------
 
 
 
 Agente 5
-Suo stato iniziale: 44
-Suo stato goal: 33
+Suo stato iniziale: 1
+Suo stato goal: 36
 
-Numero di stati espansi: 4
-Numero totale di stati inseriti nella Open: 20
-Lunghezza del percorso: 3
-Costo del percorso: 3,83
+Numero di stati espansi: 11
+Numero totale di stati inseriti nella Open: 52
+Lunghezza del percorso: 7
+Costo del percorso: 8,24
 
 Path: 
-(44, 0) -> (45, 1) -> (39, 2) -> (33, 3)
+(1, 0) -> (2, 1) -> (8, 2) -> (15, 3) -> (16, 4) -> (23, 5) -> (30, 6) -> (36, 7)
 
 Numero mosse wait: 0
 
 Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
 
-   |    | 2  | 2  |    | XX |    | 
------------------------------------
-   | 2  | 1  | 1  | 1  | XX |    | 
------------------------------------
-XX | 2  | XX | XX |    | XX |    | 
------------------------------------
-   |    | 2  |    |    | XX |    | 
------------------------------------
-4  |    |    |    | 5  | XX | 3  | 
------------------------------------
-   | 4  |    | 5  |    | XX |    | 
------------------------------------
-   | 5  | 45 |    | 3  | XX |    | 
------------------------------------
+5   | 25  | XXX | XXX | XXX |     | 
+------------------------------------
+2   | 45  | XXX |     |     | XXX | 
+------------------------------------
+2   |     | 345 | 5   |     | 1   | 
+------------------------------------
+2   |     | 4   | 3   | 5   | 1   | 
+------------------------------------
+XXX | XXX |     | 4   |     | 15  | 
+------------------------------------
+    | XXX | XXX |     |     | 15  | 
+------------------------------------
 
 
 
-Agente 6
-Suo stato iniziale: 8
-Suo stato goal: 22
-
-Numero di stati espansi: 5
-Numero totale di stati inseriti nella Open: 17
-Lunghezza del percorso: 3
-Costo del percorso: 3,83
-
-Path: 
-(8, 0) -> (8, 1) -> (16, 2) -> (22, 3)
-
-Numero mosse wait: 1
-
-Simulazione dello spostamento degli agenti finora presi in considerazione dal loro stato iniziale al goal.
-
-   |    | 2  | 2  |    | XX |    | 
------------------------------------
-6  | 2  | 1  | 1  | 1  | XX |    | 
------------------------------------
-XX | 26 | XX | XX |    | XX |    | 
------------------------------------
-6  |    | 2  |    |    | XX |    | 
------------------------------------
-4  |    |    |    | 5  | XX | 3  | 
------------------------------------
-   | 4  |    | 5  |    | XX |    | 
------------------------------------
-   | 5  | 45 |    | 3  | XX |    | 
------------------------------------
-
-
-
-Tempo speso per trovare percorso del nuovo agente: 34 millisecondi
+Tempo speso per trovare percorso del nuovo agente: 42 millisecondi
 
 Heap Size corrente (memoria occupata): 266,338 megabytes su 4234,150 megabytes
 
-Memoria dell'Heap Size corrente libera: 244,343 megabytes
+Memoria dell'Heap Size corrente libera: 256,917 megabytes
 
-Tempo di esecuzione: 232 millisecondi
+Tempo di esecuzione: 231 millisecondi
 
