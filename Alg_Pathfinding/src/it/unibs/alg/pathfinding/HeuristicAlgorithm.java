@@ -51,10 +51,10 @@ public class HeuristicAlgorithm {
 	        int currentCell = listNextCells.get(0);
 	        int[] neighborhood = getNeighborhood(currentCell);
 	        double[] neighborhoodCost = getNeighborhoodCost(currentCell);
+	        int numCols = grid[0].length;
 
 	        for (int i = 0; i < neighborhood.length; i++) {
 	            int nextPossibleCell = currentCell + neighborhood[i];
-	            int numCols = grid[0].length;
 	            int nextRowIndex = 0;
 	            int nextColIndex = 0;
 
@@ -66,14 +66,9 @@ public class HeuristicAlgorithm {
 	                nextColIndex = numCols - 1;
 	            }
 
-	            if (grid[nextRowIndex][nextColIndex] != 0) {
-	                double cost = h.get(currentCell) + neighborhoodCost[i];
-	                double insertedCost = h.get(nextPossibleCell);
-
-	                if(insertedCost == 0 || !listNextCells.contains(currentCell)) {
-	                	listNextCells.add(nextPossibleCell);
-	                    h.put(nextPossibleCell, cost);
-	                }
+	            if (grid[nextRowIndex][nextColIndex] != 0 && h.get(nextPossibleCell) == 0) {
+	            	listNextCells.add(nextPossibleCell);
+                    h.put(nextPossibleCell, h.get(currentCell) + neighborhoodCost[i]);
 	            }
 	        }
 	        listNextCells.remove(0);

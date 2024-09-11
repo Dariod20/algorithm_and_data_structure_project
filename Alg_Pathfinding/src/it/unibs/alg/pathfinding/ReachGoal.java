@@ -42,7 +42,7 @@ public class ReachGoal {
 		do {
 			if(t <= max) {
 				if(chosenNextCell == 0) {
-					Utility.writeOnFile("Dallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal + "\n");
+					Utility.writeOnFile("Dallo stato iniziale " + init + " è impossibile raggiungere il goal in " + goal + "\n\n");
 					successful = false;
 					break;
 				}
