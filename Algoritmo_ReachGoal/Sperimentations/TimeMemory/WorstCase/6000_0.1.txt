@@ -2,7 +2,7 @@ Numero righe: 6000
 Numero colonne: 6000
 Celle attraversabili: 0,90 (32400000/36000000)
 Fattore agglomerazione: 0.0
-Max iterazioni: 36000000
+Max iterazioni: 32400000
 Stato iniziale: 1
 Stato goal: 21618000
 Numero agenti preesistenti: 0

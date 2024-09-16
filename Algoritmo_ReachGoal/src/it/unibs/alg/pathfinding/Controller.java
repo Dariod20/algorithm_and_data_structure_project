@@ -29,15 +29,21 @@ public class Controller {
 	
 	public Controller() {
 		inputs = Utility.readInputs();
-		numRows = Integer.parseInt(inputs.get(0));
-		numCols = Integer.parseInt(inputs.get(1));
-		pctObst = Double.parseDouble(inputs.get(2));
-		agglFact = Double.parseDouble(inputs.get(3));
-		max = Integer.parseInt(inputs.get(4));
-		numAgents = Integer.parseInt(inputs.get(5));
-		entryInit = Integer.parseInt(inputs.get(6));
-		entryGoal = Integer.parseInt(inputs.get(7));
-		minLengthAgentsPath = Integer.parseInt(inputs.get(8));
+		try {
+			numRows = Integer.parseInt(inputs.get(0));
+			numCols = Integer.parseInt(inputs.get(1));
+			pctObst = Double.parseDouble(inputs.get(2));
+			agglFact = Double.parseDouble(inputs.get(3));
+			max = Integer.parseInt(inputs.get(4));
+			numAgents = Integer.parseInt(inputs.get(5));
+			entryInit = Integer.parseInt(inputs.get(6));
+			entryGoal = Integer.parseInt(inputs.get(7));
+			minLengthAgentsPath = Integer.parseInt(inputs.get(8));
+		} catch(NumberFormatException e) {
+			System.out.println("\nATTENZIONE: uno dei paremtri del file " + Utility.INPUT_FILE + " che si aspetta come valore "
+					+ "un numero, ha assegnato invece una stringa\n");
+			System.exit(1);
+		}
 		isGridManual = Boolean.parseBoolean(inputs.get(9));
 	}
 	

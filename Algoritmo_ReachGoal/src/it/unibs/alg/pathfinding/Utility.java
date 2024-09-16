@@ -28,12 +28,27 @@ public class Utility {
 			input = new BufferedReader(new FileReader(INPUT_FILE));
 			List<String> lines = input.lines().collect(Collectors.toList());
 			for(int i=0; i < lines.size(); i++) {
-				 String dataLine[] = lines.get(i).split(" ");
-				 inputs.add(dataLine[1]);
+				 String dataLine[] = lines.get(i).split("\s+");
+				 if(dataLine.length == 2) {
+					 if(dataLine[0].equals("griglia_manuale") || dataLine[0].equals("agenti_manuali")) {
+						 if(dataLine[1].equals("true") || dataLine[1].equals("false")) {
+							 inputs.add(dataLine[1]);
+						 } else {
+							 System.out.println("\nATTENZIONE: i parametri 'griglia_manuale' e 'agenti_manuali' devono essere di tipo boolean.\n");
+								System.exit(1);
+						 }
+					 } else {
+							inputs.add(dataLine[1]);
+						}
+				 } else {
+					 System.out.println("\nATTENZIONE: i parametri d'ingresso del file " + INPUT_FILE + " non rispettano "
+					 		+ "il formato presatbilito 'TIPO_INPUT VALORE'. Effettuare un controllo e riprovare.\n");
+					 System.exit(1);
+				 }
 			}
         }
 		catch (FileNotFoundException e) {
-			System.out.println("\nATTENTION: wrong path for the file with the inputs!\n");
+			System.out.println("\nATTENZIONE: il file " + INPUT_FILE + " non esiste o il suo percorso è sbagliato.\n");
 			System.exit(1);
 		} finally {
         	try {
@@ -51,7 +66,7 @@ public class Utility {
 				pw = new PrintWriter(new FileOutputStream(new File(OUTPUT_FILE), true));
 				pw.append(text);
 			} catch (FileNotFoundException e) {
-				System.out.println("\nATTENTION: the output file path is wrong!\n");
+				System.out.println("\nATTENZIONE: il file " + OUTPUT_FILE +" non esiste.\n");
 				System.exit(1);
 			} finally {
 				if(pw != null) {
