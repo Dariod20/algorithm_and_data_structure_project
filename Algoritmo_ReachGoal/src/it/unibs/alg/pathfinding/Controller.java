@@ -133,6 +133,9 @@ public class Controller {
 		int goal = -1;
 		int agentIndex = agentsStart;
 		for(int n = 0; n < (numAgents+1); n++) {
+			if(n == 2) {
+				int a = 9;
+			}
 			if(n == numAgents) {
 				start = System.currentTimeMillis();
 				init = entryInit;

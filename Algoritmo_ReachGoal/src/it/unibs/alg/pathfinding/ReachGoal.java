@@ -226,7 +226,7 @@ public class ReachGoal {
 			return new int[] {0, -1, -numCols, numCols, -(numCols+1), (numCols-1)};
 			
 		}
-		return new int[] {0, -1, 1, -(numCols+1), -numCols, -(numCols-1), (numCols-1), numCols, (numCols+1)};
+		return new int[] {0, -1, 1, -numCols, numCols, -(numCols+1), -(numCols-1), (numCols-1), (numCols+1)};
 	}
 	
 	/*
@@ -270,7 +270,7 @@ public class ReachGoal {
 			
 		}
 		
-		return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.COST, Utility.SQRT_COST};
+		return new double[] {Utility.COST, Utility.COST, Utility.COST, Utility.COST, Utility.COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.SQRT_COST, Utility.SQRT_COST};
 	}
 	
 	/*
