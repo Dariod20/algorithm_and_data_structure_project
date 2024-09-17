@@ -58,7 +58,7 @@ public class ReachGoal {
 					break;
 				}
 			} else {
-				Utility.writeOnFile("\nCi vogliono troppe iterazioni per cercare di raggiungere il goal: lunghezza_percorso = " + t + " supera max = " + max + "\n");
+				Utility.writeOnFile("\nCi vogliono troppe iterazioni per cercare di raggiungere il goal: lunghezza_percorso = " + t + " supera max = " + max + "\n\n");
 				successful = false;
 				break;
 			}

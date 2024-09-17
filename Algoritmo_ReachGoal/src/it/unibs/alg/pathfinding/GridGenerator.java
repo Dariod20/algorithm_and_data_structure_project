@@ -94,7 +94,13 @@ public class GridGenerator {
 		int colIndex = 0;
 		String data = inputs.get(i++);
 		while(!data.equals("true")) {
-			int cell = Integer.parseInt(data);
+			int cell = 0;
+			try {
+				cell = Integer.parseInt(data);
+			} catch(NumberFormatException e) {
+				System.out.println("\nATTENZIONE: la posizione dell'ostacolo non è un intero.\n ");
+				System.exit(1);
+			}
 			if(cell % numCols != 0) {
 				rowIndex = cell / numCols;
 				colIndex = cell % numCols-1;
@@ -113,7 +119,7 @@ public class GridGenerator {
 	 * Group them based on the agglomeration factor percentage
 	 */
 	public void insertRandomObstacles() {
-		int numObst = (int) ((int) (grid.length * grid[0].length) * pct_obst);
+		int numObst = (int) Math.round((grid.length * grid[0].length) * pct_obst);
 		ArrayList<int[]> existingObstPos = new ArrayList<>();
 		int i = 0, j = 0;
 		int[] obstPos = new int[2];

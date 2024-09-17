@@ -27,14 +27,30 @@ public class Utility {
 		try {
 			input = new BufferedReader(new FileReader(INPUT_FILE));
 			List<String> lines = input.lines().collect(Collectors.toList());
+			String gm = "";
+			String am = "";
 			for(int i=0; i < lines.size(); i++) {
 				 String dataLine[] = lines.get(i).split("\s+");
 				 if(dataLine.length == 2) {
-					 if(dataLine[0].equals("griglia_manuale") || dataLine[0].equals("agenti_manuali")) {
-						 if(dataLine[1].equals("true") || dataLine[1].equals("false")) {
+					 if(dataLine[0].equals("griglia_manuale")) {
+						 gm = dataLine[1];
+						 if(gm.equals("true") || gm.equals("false")) {
 							 inputs.add(dataLine[1]);
 						 } else {
-							 System.out.println("\nATTENZIONE: i parametri 'griglia_manuale' e 'agenti_manuali' devono essere di tipo boolean.\n");
+							 System.out.println("\nATTENZIONE: il parametro 'griglia_manuale' deve essere di tipo boolean.\n");
+								System.exit(1);
+						 }
+					 } else if(dataLine[0].equals("agenti_manuali")) {
+						 am = dataLine[1];
+						 if(am.equals("true") || am.equals("false")) {
+							 if(am.equals(gm)) {
+								 inputs.add(dataLine[1]);
+							 } else {
+								 System.out.println("\nATTENZIONE: i parametri 'griglia_manuale' ed 'agenti_manuali' devono essere entrambi true o false.\n");
+									System.exit(1);
+							 }
+						 } else {
+							 System.out.println("\nATTENZIONE: il parametro 'agenti_manuali' deve essere di tipo boolean.\n");
 								System.exit(1);
 						 }
 					 } else {

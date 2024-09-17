@@ -53,8 +53,29 @@ public class Controller {
 	public void startAlgorithm() {
 		gridGenerator = new GridGenerator(numRows, numCols, pctObst, agglFact);
 		if(isGridManual) {
+			if(inputs.get(10).equals("true")) {
+				System.out.println("\nATTENZIONE: dato che 'griglia_manuale' è true, la posizione degli ostacoli deve "
+						+ "essere indicata dall'utente.\n");
+				System.exit(1);
+			}
 			agentsStart = gridGenerator.insertManuallyObstacles(inputs, 10);
+			if(inputs.size() == agentsStart) {
+				System.out.println("\nATTENZIONE: dato che 'agenti_manuali' è true, gli stati init e goal degli agenti "
+						+ "preesistenti devono essere decisi dall'utente.\n");
+				System.exit(1);
+			}
+			if((inputs.size() - agentsStart)/2 != numAgents) {
+				System.out.println("\nATTENZIONE: il numero di stati init e goal non coincide col numero di agenti "
+						+ "preesistenti dichiarati.\n");
+				System.exit(1);
+			}
+			
 		} else {
+			if(inputs.size() > 11) {
+				System.out.println("\nATTENZIONE: dato che 'griglia_manuale' è false, gli stati init e goal degli agenti "
+						+ "preesistenti devono essere generati casualmente.\n");
+				System.exit(1);
+			}
 			gridGenerator.insertRandomObstacles();
 			gridGenerator.checkEntryInitGoalNotObstacles(entryInit, entryGoal);
 		}
@@ -79,7 +100,7 @@ public class Controller {
 		Utility.writeOnFile("Numero righe: " + numRows + "\n");
 		Utility.writeOnFile("Numero colonne: " + numCols + "\n");
 		if(!isGridManual) {
-			Utility.writeOnFile("Celle attraversabili: " + String.format("%.2f", (1-pctObst)) + " (" + (int)(dim*(1-pctObst)) + "/" + dim + ")\n");
+			Utility.writeOnFile("Celle attraversabili: " + String.format("%.2f", (1-pctObst)) + " (" + Math.round(dim*(1-pctObst)) + "/" + dim + ")\n");
 			Utility.writeOnFile("Fattore agglomerazione: " + agglFact + "\n");
 		} else {
 			double pct_obstacles = ((double) (agentsStart-10)) / dim;
@@ -133,9 +154,6 @@ public class Controller {
 		int goal = -1;
 		int agentIndex = agentsStart;
 		for(int n = 0; n < (numAgents+1); n++) {
-			if(n == 2) {
-				int a = 9;
-			}
 			if(n == numAgents) {
 				start = System.currentTimeMillis();
 				init = entryInit;
@@ -145,8 +163,13 @@ public class Controller {
 					init = gridGenerator.getRandomInit();
 					goal = gridGenerator.getRandomGoal(minLengthAgentsPath);
 				} else {
-					init = Integer.parseInt(inputs.get(agentIndex++));
-					goal = Integer.parseInt(inputs.get(agentIndex++));
+					try {
+						init = Integer.parseInt(inputs.get(agentIndex++));
+						goal = Integer.parseInt(inputs.get(agentIndex++));
+					} catch(NumberFormatException e) {
+						System.out.println("\nATTENZIONE: lo stato init o goal non è indicato come un intero.\n ");
+						System.exit(1);
+					}
 				}
 			}
 			
